@@ -1,0 +1,24 @@
+@if (!simple) {
+  <button nzSize="large" nz-button nzType="text" nz-dropdown [nzDropdownMenu]="i18nMenu">
+    <span nz-icon nzType="translation"></span>
+    @switch (locale) {
+      @case ('zh-Hans') {
+        简体中文
+      }
+      @case ('en-US') {
+        English
+      }
+    }
+  </button>
+} @else {
+  <button nz-button nzType="text" nz-dropdown [nzDropdownMenu]="i18nMenu">
+    <span nz-icon nzType="translation"></span>
+  </button>
+}
+
+<nz-dropdown-menu #i18nMenu="nzDropdownMenu">
+  <ul nz-menu>
+    <li nz-menu-item (click)="wpx.setLocale('zh-Hans')"> 简体中文</li>
+    <li nz-menu-item (click)="wpx.setLocale('en-US')"> English</li>
+  </ul>
+</nz-dropdown-menu>

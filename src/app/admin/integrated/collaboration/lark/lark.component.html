@@ -1,0 +1,49 @@
+<form nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-form-item>
+    <nz-form-label nzRequired>Lark App ID</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.LarkAppId">
+      <input nz-input formControlName="LarkAppId" placeholder="Please enter the Lark App ID" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>Lark App Secret</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.LarkAppSecret">
+      <input
+        nz-input
+        type="password"
+        autocomplete="new-password"
+        formControlName="LarkAppSecret"
+        placeholder="Please enter the Lark App Secret"
+      />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>Lark Encrypt Key</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.LarkEncryptKey">
+      <input
+        nz-input
+        type="password"
+        autocomplete="new-password"
+        formControlName="LarkEncryptKey"
+        placeholder="Please enter the Lark Encrypy Key"
+      />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>Lark Verification Token</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.LarkVerificationToken">
+      <input
+        nz-input
+        type="password"
+        autocomplete="new-password"
+        formControlName="LarkVerificationToken"
+        placeholder="Please enter the Lark Verification Token"
+      />
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *nzModalFooter>
+  <button nz-button type="button" nzType="default" (click)="close()">Cancel</button>
+  <button nz-button nzType="primary" form="form" [disabled]="!form.valid">Submit</button>
+</div>

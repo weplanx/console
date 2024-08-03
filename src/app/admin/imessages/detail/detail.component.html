@@ -1,0 +1,140 @@
+<nz-layout style="height: 100%; background: transparent">
+  <nz-page-header>
+    <nz-page-header-title>{{ doc.topic }}</nz-page-header-title>
+    <nz-page-header-extra>
+      <nz-space nzAlign="center">
+        <button
+          *nzSpaceItem
+          nz-button
+          nzType="primary"
+          nzShape="circle"
+          nz-popconfirm
+          nzPopconfirmTitle="Are you sure you want to restart collector and monitoring?"
+          (nzOnConfirm)="restart()"
+        >
+          <span nz-icon nzType="sync" nzTheme="outline"></span>
+        </button>
+      </nz-space>
+    </nz-page-header-extra>
+    <nz-page-header-footer>
+      <nz-segmented [nzOptions]="options" [(ngModel)]="index"></nz-segmented>
+    </nz-page-header-footer>
+  </nz-page-header>
+
+  <nz-content style="overflow: hidden auto">
+    <nz-card>
+      <nz-table nzTemplateMode>
+        <thead>
+          <tr>
+            <th nzWidth="60px" nzAlign="center">
+              <button nz-button nzType="text" disabled>
+                <span nz-icon nzType="notification" nzTheme="outline"></span>
+              </button>
+            </th>
+            <th nzWidth="240px"><b>Project Name</b></th>
+            <th><b>Topic</b></th>
+            <th nzRight nzWidth="150px"><b>Input</b></th>
+            <th nzRight nzWidth="150px"><b>Output</b></th>
+            @if (index === 0) {
+              <th nzRight nzWidth="150px"><b>Dropped</b></th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (id of doc.projects; track id) {
+            <tr>
+              <td nzAlign="center">
+                <button nz-button nzType="text" (click)="openPublish(id)">
+                  <span nz-icon nzType="send" nzTheme="outline"></span>
+                </button>
+              </td>
+              <td>
+                <ng-container *ngIf="projectDict[id] as project">
+                  {{ project.name }}
+                </ng-container>
+              </td>
+              <td>
+                <a (click)="openLogs(id)">{{ doc.topic }}/{{ id }}</a>
+              </td>
+              @switch (index) {
+                @case (0) {
+                  <td>
+                    <app-admin-imessages-detail-count-rate
+                      count="messages.in.count"
+                      rate="messages.in.rate"
+                      [metric]="metricsDict[doc.topic + '/' + id]"
+                    ></app-admin-imessages-detail-count-rate>
+                  </td>
+                  <td>
+                    <app-admin-imessages-detail-count-rate
+                      count="messages.out.count"
+                      rate="messages.out.rate"
+                      [metric]="metricsDict[doc.topic + '/' + id]"
+                    ></app-admin-imessages-detail-count-rate>
+                  </td>
+                }
+                @case (1) {
+                  <td>
+                    <app-admin-imessages-detail-count-rate
+                      count="messages.qos0.in.count"
+                      rate="messages.qos0.in.rate"
+                      [metric]="metricsDict[doc.topic + '/' + id]"
+                    ></app-admin-imessages-detail-count-rate>
+                  </td>
+                  <td>
+                    <app-admin-imessages-detail-count-rate
+                      count="messages.qos0.out.count"
+                      rate="messages.qos0.out.rate"
+                      [metric]="metricsDict[doc.topic + '/' + id]"
+                    ></app-admin-imessages-detail-count-rate>
+                  </td>
+                }
+                @case (2) {
+                  <td>
+                    <app-admin-imessages-detail-count-rate
+                      count="messages.qos1.in.count"
+                      rate="messages.qos1.in.rate"
+                      [metric]="metricsDict[doc.topic + '/' + id]"
+                    ></app-admin-imessages-detail-count-rate>
+                  </td>
+                  <td>
+                    <app-admin-imessages-detail-count-rate
+                      count="messages.qos1.out.count"
+                      rate="messages.qos1.out.rate"
+                      [metric]="metricsDict[doc.topic + '/' + id]"
+                    ></app-admin-imessages-detail-count-rate>
+                  </td>
+                }
+                @case (3) {
+                  <td>
+                    <app-admin-imessages-detail-count-rate
+                      count="messages.qos2.in.count"
+                      rate="messages.qos2.in.rate"
+                      [metric]="metricsDict[doc.topic + '/' + id]"
+                    ></app-admin-imessages-detail-count-rate>
+                  </td>
+                  <td>
+                    <app-admin-imessages-detail-count-rate
+                      count="messages.qos2.out.count"
+                      rate="messages.qos2.out.rate"
+                      [metric]="metricsDict[doc.topic + '/' + id]"
+                    ></app-admin-imessages-detail-count-rate>
+                  </td>
+                }
+              }
+              @if (index === 0) {
+                <td>
+                  <app-admin-imessages-detail-count-rate
+                    count="messages.dropped.count"
+                    rate="messages.dropped.rate"
+                    [metric]="metricsDict[doc.topic + '/' + id]"
+                  ></app-admin-imessages-detail-count-rate>
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </nz-content>
+</nz-layout>

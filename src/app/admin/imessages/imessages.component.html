@@ -1,0 +1,80 @@
+<ng-template #titleRef>
+  <nz-space nzAlign="center">
+    <wpx-keyword
+      *nzSpaceItem
+      [wpxWidth]="320"
+      [wpxModel]="model"
+      [wpxKeys]="['topic']"
+      (wpxSubmit)="getData()"
+      wpxPlaceholder="Topic"
+    ></wpx-keyword>
+    <wpx-toolbox *nzSpaceItem [wpxModel]="model" (wpxClear)="getData()" (wpxRefresh)="getData()"> </wpx-toolbox>
+  </nz-space>
+</ng-template>
+
+<ng-template #extraRef>
+  <nz-space nzAlign="center">
+    <ng-container *ngIf="model.selection.size as size">
+      <button *nzSpaceItem nz-button nzType="dashed" nz-dropdown [nzDropdownMenu]="menu">
+        {{ size }} selected items
+      </button>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu>
+          <li nz-menu-item (click)="wpxTable.clearSelections()"> Unselect </li>
+          <li nz-menu-item nzDanger (click)="bulkDelete()"> Delete </li>
+        </ul>
+      </nz-dropdown-menu>
+    </ng-container>
+    <button *nzSpaceItem nz-button (click)="openPublish()"> Publish </button>
+    <button *nzSpaceItem nz-button (click)="openEmqx()"> Connect </button>
+    <button *nzSpaceItem nz-button nzType="primary" (click)="openForm()"> Create </button>
+  </nz-space>
+</ng-template>
+
+<wpx-table
+  #wpxTable
+  [wpxTitle]="titleRef"
+  [wpxExtra]="extraRef"
+  [wpxModel]="model"
+  [wpxColumns]="[
+    {
+      title: 'Topic',
+      key: 'name',
+      width: '360px',
+      render: name
+    },
+    {
+      title: 'Detail',
+      key: 'detail',
+      render: detail
+    }
+  ]"
+  [wpxAction]="action"
+  (wpxChange)="getData()"
+>
+  <ng-template #name let-data>
+    {{ data.topic }}
+    <ng-container *ngIf="data.description">
+      <span nz-icon nzType="question-circle" nzTheme="outline" [nz-tooltip]="data.description"></span>
+    </ng-container>
+  </ng-template>
+  <ng-template #detail let-data>
+    <nz-tag>
+      <span nz-icon [nzType]="data.rule ? 'check-circle' : 'close-circle'"></span>
+      <span>Logset</span>
+    </nz-tag>
+    <a (click)="openDetail(data)">There are {{ data.projects.length }} projects authorized</a>
+  </ng-template>
+</wpx-table>
+
+<ng-template #action let-data>
+  <button nz-button nzType="text" nz-dropdown [nzDropdownMenu]="menu">
+    <span nz-icon nzType="ellipsis" nzTheme="outline"></span>
+  </button>
+  <nz-dropdown-menu #menu="nzDropdownMenu">
+    <ul nz-menu>
+      <li nz-menu-item (click)="openForm(data)"> Modify </li>
+      <li nz-menu-item nzDanger (click)="delete(data)"> Delete </li>
+    </ul>
+  </nz-dropdown-menu>
+</ng-template>

@@ -1,0 +1,25 @@
+<nz-layout style="height: 100%">
+  <nz-header>
+    <nz-row nzJustify="space-between" nzAlign="middle">
+      <nz-col>
+        <button nz-button nzType="text" (click)="star()">
+          <span nz-icon nzType="github"></span>
+          Star
+        </button>
+      </nz-col>
+      <nz-col></nz-col>
+      <nz-col></nz-col>
+    </nz-row>
+  </nz-header>
+  <nz-content>
+    <ng-content></ng-content>
+  </nz-content>
+  <nz-footer>
+    <nz-space nzDirection="vertical" nzSize="small">
+      <span *nzSpaceItem nz-typography>BSD-3-Clause License</span>
+      <span *nzSpaceItem nz-typography>
+        Copyright <span nz-icon nzType="copyright"></span> 2024. Open Source DevOps by WEPLANX.
+      </span>
+    </nz-space>
+  </nz-footer>
+</nz-layout>

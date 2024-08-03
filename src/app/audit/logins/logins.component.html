@@ -1,0 +1,261 @@
+<ng-template #titleRef>
+  <wpx-toolbox [wpxModel]="model" [wpxSearchForm]="form" (wpxClear)="clear()" (wpxRefresh)="getData()">
+    <form nz-form nzLayout="vertical" id="search" [formGroup]="form" (wpxSubmit)="search($event)">
+      <nz-row [nzGutter]="[16, 16]">
+        <nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label>Timestamp</nz-form-label>
+            <nz-form-control>
+              <nz-range-picker
+                style="width: 100%"
+                [nzShowTime]="{ nzFormat: 'HH:mm' }"
+                nzFormat="yyyy-MM-dd HH:mm"
+                formControlName="timestamp"
+              ></nz-range-picker>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-col>
+        <nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label>User</nz-form-label>
+            <nz-form-control>
+              <nz-select
+                style="width: 100%"
+                nzMode="multiple"
+                formControlName="user_id"
+                nzPlaceHolder="Email, Name"
+                nzAllowClear
+                nzShowSearch
+                nzServerSearch
+                (nzOnSearch)="searchUsers$.next($event)"
+              >
+                @for (item of searchUserItems; track item._id) {
+                  <nz-option nzCustomContent [nzValue]="item._id" [nzLabel]="item.email">
+                    {{ item.email }} [{{ item.name | wpxBlank: 'None' }}]
+                  </nz-option>
+                }
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-col>
+        <nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label>Source</nz-form-label>
+            <nz-form-control>
+              <nz-select formControlName="source" nzMode="multiple" nzAllowClear nzPlaceHolder="Filter source">
+                <nz-option nzValue="email" nzLabel="Email"></nz-option>
+                <nz-option nzValue="totp" nzLabel="Totp"></nz-option>
+                <nz-option nzValue="lark" nzLabel="Lark"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-col>
+        <nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label>IP</nz-form-label>
+            <nz-form-control>
+              <nz-input-group [nzSuffix]="clearRef">
+                <input type="text" nz-input formControlName="client_ip" placeholder="Filter Client IP" />
+                <ng-template #clearRef>
+                  @if (client_ip.value) {
+                    <span
+                      nz-icon
+                      class="ant-input-clear-icon"
+                      nzTheme="fill"
+                      nzType="close-circle"
+                      (click)="client_ip.reset()"
+                    ></span>
+                  }
+                </ng-template>
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-col>
+      </nz-row>
+    </form>
+  </wpx-toolbox>
+</ng-template>
+<ng-template #extraRef>
+  @if (model.selection.size; as size) {
+    <button nz-button nzType="dashed" nz-dropdown [nzDropdownMenu]="menu"> {{ size }} selected items </button>
+    <nz-dropdown-menu #menu="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item (click)="wpxTable.clearSelections()"> Unselect </li>
+        <li nz-menu-item> Export </li>
+      </ul>
+    </nz-dropdown-menu>
+  }
+</ng-template>
+
+<wpx-table
+  #wpxTable
+  [wpxTitle]="titleRef"
+  [wpxExtra]="extraRef"
+  [wpxModel]="model"
+  [wpxColumns]="[
+    {
+      title: 'Timestamp',
+      key: 'timestamp',
+      width: '200px',
+      format: 'date'
+    },
+    {
+      title: 'User',
+      key: 'user',
+      width: '240px',
+      render: user
+    },
+    {
+      title: 'Source',
+      key: 'source',
+      width: '240px',
+      render: source
+    },
+    {
+      title: 'Detail',
+      key: 'detail',
+      width: '800px',
+      render: detail
+    },
+    {
+      title: 'User Agent',
+      key: 'userAgent',
+      width: '1000px',
+      render: userAgent
+    }
+  ]"
+  [wpxAction]="action"
+  [wpxX]="'2500px'"
+  (wpxChange)="getData()"
+>
+  <ng-template #source let-data>
+    @switch (data.metadata!.source) {
+      @case ('email') {
+        Email
+      }
+      @case ('sms') {
+        Sms
+      }
+      @case ('totp') {
+        Totp
+      }
+      @case ('lark') {
+        Lark
+      }
+      @default {
+        Other
+      }
+    }
+  </ng-template>
+  <ng-template #user let-data>
+    @if (userKv && userKv[data.metadata!.user_id]; as u) {
+      <a [nz-tooltip]="u.name" (click)="openUserDetail(u)">
+        {{ u.email }}
+        <span nz-icon nzType="select" nzTheme="outline"></span>
+      </a>
+    }
+  </ng-template>
+  <ng-template #detail let-data>
+    <nz-space [nzSplit]="spaceSplit">
+      <span *nzSpaceItem>{{ data.metadata!.client_ip }}</span>
+      @switch (data.metadata!.version) {
+        @case ('shuliancloud.v4') {
+          @if (data.detail; as detail) {
+            <span *nzSpaceItem>{{ detail.isp | wpxBlank: 'unknown' }}</span>
+            <span *nzSpaceItem>{{ detail.country | wpxBlank: 'unknown' }}[{{ detail.continent }}]</span>
+            <span *nzSpaceItem>{{ detail.prov | wpxBlank: 'unknown' }}</span>
+            <span *nzSpaceItem>
+              {{ detail.city | wpxBlank: 'unknown' }}[{{ detail.lng | wpxBlank: '0' }},{{ detail.lat | wpxBlank: '0' }}]
+            </span>
+          }
+        }
+      }
+    </nz-space>
+  </ng-template>
+  <ng-template #userAgent let-data>
+    <code>{{ data.user_agent }}</code>
+  </ng-template>
+</wpx-table>
+
+<ng-template #action let-data>
+  <button nz-button nzType="text" disabled>
+    <span nz-icon nzType="ellipsis" nzTheme="outline"></span>
+  </button>
+</ng-template>
+
+<nz-drawer
+  nzTitle="User Detail"
+  [nzWidth]="640"
+  [nzPlacement]="'right'"
+  [nzClosable]="false"
+  [nzVisible]="!!userDetail"
+  (nzOnClose)="closeUserDetail()"
+>
+  <ng-container *nzDrawerContent>
+    @if (userDetail; as u) {
+      <nz-descriptions nzBordered [nzColumn]="2">
+        <nz-descriptions-item nzTitle="ID" [nzSpan]="2">{{ u._id }}</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Email">{{ u.email }}</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Name">
+          @if (u.name) {
+            {{ u.name }}
+          } @else {
+            None
+          }
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Avatar" [nzSpan]="2">{{ u.avatar }}</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Status" [nzSpan]="2">
+          @if (u.status) {
+            <nz-badge nzStatus="processing"></nz-badge> <span>On</span>
+          } @else {
+            <nz-badge nzStatus="default"></nz-badge> <span>Off</span>
+          }
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Total Number Of Sessions" [nzSpan]="2">
+          <span>
+            It has been logged in <b> {{ u.sessions }} </b> times
+          </span>
+        </nz-descriptions-item>
+        @if (u.history; as history) {
+          <nz-descriptions-item nzTitle="Last Login Time" [nzSpan]="2">
+            {{ history.timestamp | date: 'medium' }}
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="IP" [nzSpan]="2">
+            {{ history.metadata.client_ip }}
+          </nz-descriptions-item>
+          @switch (u.history!.metadata.version) {
+            @case ('shuliancloud.v4') {
+              <nz-descriptions-item nzTitle="Geographic Information" [nzSpan]="2">
+                @if (u.history!.detail; as detail) {
+                  <nz-space [nzSplit]="spaceSplit">
+                    <span *nzSpaceItem>{{ detail.country | wpxBlank: 'unknown' }}[{{ detail.continent }}]</span>
+                    <span *nzSpaceItem>{{ detail.prov | wpxBlank: 'unknown' }}</span>
+                    <span *nzSpaceItem>{{ detail.city | wpxBlank: 'unknown' }}[{{ detail.lng }},{{ detail.lat }}]</span>
+                  </nz-space>
+                }
+              </nz-descriptions-item>
+              <nz-descriptions-item nzTitle="ISP" [nzSpan]="2">
+                @if (u.history!.detail; as detail) {
+                  <nz-space [nzSplit]="spaceSplit">
+                    <span *nzSpaceItem>{{ detail.isp }}</span>
+                    <span *nzSpaceItem>{{ detail.timezone }}</span>
+                  </nz-space>
+                }
+              </nz-descriptions-item>
+            }
+          }
+        }
+        <nz-descriptions-item nzTitle="Create Time" [nzSpan]="2">
+          {{ u.create_time | date: 'medium' }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Update Time" [nzSpan]="2">
+          {{ u.update_time | date: 'medium' }}
+        </nz-descriptions-item>
+      </nz-descriptions>
+    }
+  </ng-container>
+</nz-drawer>
+
+<ng-template #spaceSplit>
+  <nz-divider nzType="vertical"></nz-divider>
+</ng-template>

@@ -1,0 +1,26 @@
+nz-tree {
+  padding: 6px 2px 0;
+  height: calc(100% - 50px);
+  overflow: hidden;
+}
+
+.custom-node {
+  cursor: pointer;
+  line-height: 30px;
+  margin-left: 4px;
+}
+
+.file-name,
+.folder-name {
+  margin-left: 4px;
+}
+
+.file-desc,
+.folder-desc {
+  padding: 0 8px;
+  display: inline-block;
+  background: #87ceff;
+  color: #ffffff;
+  position: relative;
+  left: 12px;
+}

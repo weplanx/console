@@ -1,0 +1,28 @@
+<form id="form" nz-form nzLayout="vertical" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-form-item formArrayName="entry">
+    @for (x of list!.controls; track i; let i = $index; let isFirst = $first) {
+      <nz-form-control>
+        <nz-input-group nzCompact [ngStyle]="{ 'margin-top': isFirst ? null : '-1px' }">
+          <input
+            style="width: 90%"
+            type="text"
+            nz-input
+            [formControlName]="i"
+            placeholder="Please enter an IP address"
+          />
+          <button nz-button type="button" nzType="default" style="width: 10%" (click)="remove(i)">
+            <i nz-icon nzType="minus-circle"></i>
+          </button>
+        </nz-input-group>
+      </nz-form-control>
+    }
+    <button style="margin-top: 8px" nzBlock type="button" nz-button nzType="dashed" (click)="append()">
+      <i nz-icon nzType="plus-circle"></i> Create
+    </button>
+  </nz-form-item>
+</form>
+
+<div *nzModalFooter>
+  <button nz-button type="button" nzType="default" (click)="close()">Cancel</button>
+  <button nz-button nzType="primary" form="form" [disabled]="!form.valid">Submit</button>
+</div>

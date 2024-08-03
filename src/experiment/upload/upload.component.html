@@ -1,0 +1,37 @@
+<nz-card>
+  <form nz-form nzLayout="vertical" [formGroup]="form" (wpxSubmit)="submit($event)">
+    <nz-form-item>
+      <nz-form-label>Avatar</nz-form-label>
+      <nz-form-control>
+        <wpx-upload-avatar
+          wpxExt="image"
+          [wpxAccept]="['image/jpeg', 'image/png']"
+          [wpxFallback]="['assets', 'photon.svg'] | wpxAssets"
+          formControlName="avatar"
+        >
+        </wpx-upload-avatar>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label>Picture</nz-form-label>
+      <nz-form-control>
+        <app-pictures-input formControlName="pictures"></app-pictures-input>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label>Video</nz-form-label>
+      <nz-form-control>
+        <app-videos-input formControlName="videos"></app-videos-input>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <nz-space>
+          <button *nzSpaceItem nz-button type="button" (click)="mock()">Mock Init</button>
+          <button *nzSpaceItem nz-button type="button" (click)="reset()">Reset</button>
+          <button *nzSpaceItem nz-button nzType="primary" [disabled]="!form.valid">Submit</button>
+        </nz-space>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-card>

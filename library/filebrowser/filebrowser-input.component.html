@@ -1,0 +1,103 @@
+<div style="padding: 12px 0">
+  <nz-space nzWrap>
+    @if (wpxValue.length === 0) {
+      <nz-empty *nzSpaceItem [nzNotFoundContent]="null"></nz-empty>
+    }
+    @for (item of wpxValue; track item; let i = $index) {
+      <nz-card
+        *nzSpaceItem
+        nzType="inner"
+        nzSize="small"
+        [nzBodyStyle]="{ padding: 0 }"
+        [nzCover]="coverRef"
+        [nzActions]="[indexRef, downloadRef, removeRef]"
+      >
+        <ng-template #coverRef [ngSwitch]="wpxType">
+          @switch (wpxType) {
+            @case ('picture') {
+              <div class="photo" (click)="preview(item)">
+                <img
+                  nz-image
+                  nzDisablePreview
+                  [nzSrc]="
+                    [item]
+                      | wpxAssets
+                        : (item.includes('?') ? option.style.processed.thumbnail : option.style.default.thumbnail)
+                  "
+                  [nzPlaceholder]="
+                    [item]
+                      | wpxAssets
+                        : (item.includes('?') ? option.style.processed.placeholder : option.style.default.placeholder)
+                  "
+                  [alt]="item"
+                />
+              </div>
+            }
+            @case ('video') {
+              <div class="photo" (click)="video(item)">
+                <img
+                  nz-image
+                  nzDisablePreview
+                  [nzSrc]="[item + '_chart'] | wpxAssets: option.style.default.thumbnail"
+                  [alt]="item"
+                />
+              </div>
+            }
+          }
+        </ng-template>
+        <ng-template #indexRef>
+          <code>#{{ i + 1 }}</code>
+        </ng-template>
+        <ng-template #downloadRef>
+          <a target="_blank" [href]="[item] | wpxAssets">
+            <span nz-icon nzType="download"></span>
+          </a>
+        </ng-template>
+        <ng-template #removeRef>
+          <span (click)="remove(i)" nz-icon nzType="delete"></span>
+        </ng-template>
+      </nz-card>
+    }
+  </nz-space>
+</div>
+
+<nz-space>
+  <button *nzSpaceItem type="button" nz-button (click)="view()">
+    <i nz-icon nzType="import"></i>
+    <span>Import</span>
+  </button>
+  <button *nzSpaceItem type="button" nz-button nzType="link" [disabled]="wpxValue.length === 0" (click)="openSort()">
+    <i nz-icon nzType="sort-descending"></i>
+    <span>Sort</span>
+  </button>
+</nz-space>
+
+<ng-template #footerRef let-ref="modalRef">
+  <button nz-button (click)="ref.triggerCancel()">Cancel</button>
+  @if (instance.ds.selection.size; as size) {
+    @if (size + wpxValue.length > wpxLimit!) {
+      <button nz-button disabled> Maximum limit exceeded </button>
+    } @else {
+      <button nz-button nzType="primary" (click)="ref.triggerOk()"> Import {{ size }} items </button>
+    }
+  }
+</ng-template>
+
+<ng-template #sortRef>
+  <div cdkDropList (cdkDropListDropped)="sort($event)">
+    @for (item of wpxValue; track item) {
+      <div style="height: 110px">
+        <div class="photo meta" cdkDrag>
+          @switch (wpxType) {
+            @case ('picture') {
+              <img nz-image nzDisablePreview [nzSrc]="[item, 'thumbnail'] | wpxAssets" [alt]="item" />
+            }
+            @case ('video') {
+              <img nz-image nzDisablePreview [nzSrc]="[item + '_chart'] | wpxAssets" [alt]="item" />
+            }
+          }
+        </div>
+      </div>
+    }
+  </div>
+</ng-template>

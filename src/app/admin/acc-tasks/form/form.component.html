@@ -1,0 +1,27 @@
+<form nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-form-item>
+    <nz-form-label nzRequired>Resource Kind</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.kind">
+      <nz-select formControlName="kind" nzAllowClear nzPlaceHolder="Please select a resource kind">
+        <nz-option nzValue="static" nzLabel="Static"> </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>Source URL</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.source">
+      <input nz-input formControlName="source" placeholder="Please enter the Source URL" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>Target URL</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.target">
+      <input nz-input formControlName="target" placeholder="Please enter the Target URL" />
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *nzModalFooter>
+  <button nz-button type="button" nzType="default" (click)="close()">Cancel</button>
+  <button nz-button nzType="primary" form="form" [disabled]="!form.valid">Submit</button>
+</div>

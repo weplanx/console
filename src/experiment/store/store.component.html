@@ -1,0 +1,31 @@
+<nz-card style="height: 100%">
+  <nz-row [nzGutter]="16">
+    <nz-col [nzSpan]="12">
+      <nz-code-editor style="height: 300px" [ngModel]="data" [nzEditorOption]="{ language: 'json' }"></nz-code-editor>
+    </nz-col>
+    <nz-col [nzSpan]="12">
+      <form nz-form nzLayout="vertical">
+        <nz-form-item>
+          <nz-form-control>
+            <nz-space>
+              <input *nzSpaceItem nz-input [(ngModel)]="title" [ngModelOptions]="{ standalone: true }" />
+              <button *nzSpaceItem nz-button (click)="update()">Set</button>
+            </nz-space>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <nz-space>
+              <button *nzSpaceItem nz-button (click)="set()">Reset</button>
+            </nz-space>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <button nz-button (click)="delete()">Delete</button>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </nz-col>
+  </nz-row>
+</nz-card>

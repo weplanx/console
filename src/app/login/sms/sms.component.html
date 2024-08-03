@@ -1,0 +1,41 @@
+<form nz-form nzLayout="vertical" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-form-item>
+    <nz-form-control [nzAutoTips]="tips.phone">
+      <nz-input-group nzCompact>
+        <nz-select formControlName="area" style="width: 30%" nzPlaceHolder="Area Code">
+          <nz-option [nzLabel]="'+86 China'" [nzValue]="'+86'"></nz-option>
+        </nz-select>
+        <input type="text" nz-input formControlName="phone" style="width: 70%" placeholder="Phone Number" />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control [nzAutoTips]="tips.code">
+      <nz-row [nzGutter]="8">
+        <nz-col [nzSpan]="12">
+          <input nz-input formControlName="code" placeholder="Code" />
+        </nz-col>
+        <nz-col [nzSpan]="12">
+          <button
+            nz-button
+            type="button"
+            [nzLoading]="timer === 60"
+            [disabled]="!form.get('phone')?.value || timer !== 0"
+            (click)="getCode()"
+          >
+            @if (timer === 0) {
+              Get
+            } @else {
+              {{ timer }} sec
+            }
+          </button>
+        </nz-col>
+      </nz-row>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control>
+      <button nz-button nzBlock nzType="primary" [nzLoading]="loading" [disabled]="!form.valid">Go</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>

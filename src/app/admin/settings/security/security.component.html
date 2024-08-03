@@ -1,0 +1,148 @@
+<nz-card>
+  <nz-tabset
+    style="height: 100%"
+    nzTabPosition="left"
+    [(nzSelectedIndex)]="tabIndex"
+    (nzSelectedIndexChange)="saveTabIndex()"
+  >
+    <nz-tab nzTitle="Basic">
+      <nz-card>
+        <nz-list nzSize="large" nzItemLayout="vertical">
+          <nz-list-item>
+            <nz-list-item-meta>
+              <nz-list-item-meta-title><b>Session Expired</b></nz-list-item-meta-title>
+              <nz-list-item-meta-description>
+                If the user does not operate within {{ data['SessionTTL'] / 1e9 }} sec, log out of the current account.
+              </nz-list-item-meta-description>
+            </nz-list-item-meta>
+            <nz-list-item-extra>
+              <button nz-button nzType="primary" nzShape="circle" nz-tooltip="Modify" (click)="setSession()">
+                <i nz-icon nzType="edit"></i>
+              </button>
+            </nz-list-item-extra>
+          </nz-list-item>
+          <nz-list-item>
+            <nz-list-item-meta>
+              <nz-list-item-meta-title><b>Account Locking</b></nz-list-item-meta-title>
+              <nz-list-item-meta-description>
+                The user failed to sign in {{ data['LoginFailures'] }} times in a row, and the account was locked for
+                {{ data['LoginTTL'] / 1e9 }} sec.
+              </nz-list-item-meta-description>
+            </nz-list-item-meta>
+            <nz-list-item-extra>
+              <button nz-button nzType="primary" nzShape="circle" nz-tooltip="Modify" (click)="setUserLock()">
+                <i nz-icon nzType="edit"></i>
+              </button>
+            </nz-list-item-extra>
+          </nz-list-item>
+          <nz-list-item>
+            <nz-list-item-meta>
+              <nz-list-item-meta-title><b>IP Locking</b></nz-list-item-meta-title>
+              <nz-list-item-meta-description>
+                After the IP of consecutive login failures is {{ data['IpLoginFailures'] }} times (enabled when there is
+                no whitelist), lock the IP
+              </nz-list-item-meta-description>
+            </nz-list-item-meta>
+            <nz-list-item-extra>
+              <button nz-button nzType="primary" nzShape="circle" nz-tooltip="Modify" (click)="setIpLock()">
+                <i nz-icon nzType="edit"></i>
+              </button>
+            </nz-list-item-extra>
+          </nz-list-item>
+          <nz-list-item>
+            <nz-list-item-meta>
+              <nz-list-item-meta-title><b>Password Strength</b></nz-list-item-meta-title>
+              <nz-list-item-meta-description>
+                @switch (data['PwdStrategy']) {
+                  @case (0) {
+                    Unlimited
+                  }
+                  @case (1) {
+                    Requires uppercase and lowercase letters
+                  }
+                  @case (2) {
+                    Requires uppercase letters, lowercase letters and numbers
+                  }
+                  @case (3) {
+                    Requires uppercase letters, lowercase letters, numbers, and special characters
+                  }
+                }
+              </nz-list-item-meta-description>
+            </nz-list-item-meta>
+            <nz-list-item-extra>
+              <button nz-button nzType="primary" nzShape="circle" nz-tooltip="Modify" (click)="setPwdStrategy()">
+                <i nz-icon nzType="edit"></i>
+              </button>
+            </nz-list-item-extra>
+          </nz-list-item>
+          <nz-list-item>
+            <nz-list-item-meta>
+              <nz-list-item-meta-title><b>Password Expired</b></nz-list-item-meta-title>
+              <nz-list-item-meta-description>
+                @if (data['PwdTTL'] === 0) {
+                  Permanent
+                } @else {
+                  The password expires after {{ data['PwdTTL'] / 86400e9 }} days, and the system forces a password
+                  change.
+                }
+              </nz-list-item-meta-description>
+            </nz-list-item-meta>
+            <nz-list-item-extra>
+              <button nz-button nzType="primary" nzShape="circle" nz-tooltip="Modify" (click)="setPwdTtl()">
+                <i nz-icon nzType="edit"></i>
+              </button>
+            </nz-list-item-extra>
+          </nz-list-item>
+        </nz-list>
+      </nz-card>
+    </nz-tab>
+    <nz-tab nzTitle="Whitelist">
+      <nz-alert
+        nzType="info"
+        nzBanner
+        nzMessage="Whitelist does not limit login failure to lock, supports CIDR, for example: 192.168.1.0/24"
+      ></nz-alert>
+      <nz-table #IpWhitelist nzHideOnSinglePage [nzData]="data['IpWhitelist']" [nzFooter]="whitelistActions">
+        <thead>
+          <tr>
+            <th><b>IP Address</b></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of IpWhitelist.data; track item) {
+            <tr>
+              <td>{{ item }}</td>
+            </tr>
+          }
+        </tbody>
+        <ng-template #whitelistActions>
+          <button nz-button nzType="text" nzBlock (click)="setIpList('IpWhitelist')">Modify</button>
+        </ng-template>
+      </nz-table>
+    </nz-tab>
+    <nz-tab nzTitle="Blacklist">
+      <nz-alert
+        nzType="info"
+        nzBanner
+        nzMessage="Blacklists will be blocked from accessing, supporting CIDR, for example: 192.168.1.0/24"
+      ></nz-alert>
+      <nz-table #IpBlacklist nzHideOnSinglePage [nzData]="data['IpBlacklist']" [nzFooter]="blacklistActions">
+        <thead>
+          <tr>
+            <th><b>IP Address</b></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of IpBlacklist.data; track item) {
+            <tr>
+              <td>{{ item }}</td>
+            </tr>
+          }
+        </tbody>
+        <ng-template #blacklistActions>
+          <button nz-button nzType="text" nzBlock (click)="setIpList('IpBlacklist')">Modify</button>
+        </ng-template>
+      </nz-table>
+    </nz-tab>
+  </nz-tabset>
+</nz-card>

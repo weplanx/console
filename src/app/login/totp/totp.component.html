@@ -1,0 +1,21 @@
+<form nz-form nzLayout="vertical" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-form-item>
+    <nz-form-control [nzAutoTips]="tips.email">
+      <nz-input-group nzPrefixIcon="user">
+        <input type="text" nz-input formControlName="email" placeholder="Email" />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control [nzAutoTips]="tips.totp">
+      <nz-input-group nzPrefixIcon="lock">
+        <input type="password" nz-input formControlName="code" autocomplete="new-password" placeholder="Code" />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control>
+      <button nz-button nzBlock nzType="primary" [nzLoading]="loading" [disabled]="!form.valid">Go</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>

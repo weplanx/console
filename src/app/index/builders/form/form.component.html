@@ -1,0 +1,68 @@
+<form nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-form-item>
+    <nz-form-label nzRequired>Name</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.name">
+      <input nz-input formControlName="name" placeholder="Please enter a name" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>Parent</nz-form-label>
+    <nz-form-control>
+      <nz-tree-select
+        nzShowSearch
+        [nzNodes]="nodes"
+        formControlName="parent"
+        nzPlaceHolder="Default superlative"
+      ></nz-tree-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>Kind</nz-form-label>
+    <nz-form-control nzHasFeedback>
+      <nz-select formControlName="kind" nzPlaceHolder="Please select a kind">
+        <nz-option nzValue="nav" nzLabel="Nav"> </nz-option>
+        <nz-option nzValue="collection" nzLabel="Collection"> </nz-option>
+        <nz-option nzValue="single" nzLabel="Single"> </nz-option>
+        <nz-option nzValue="manual" nzLabel="Manual"> </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  @if (['collection', 'single'].includes(kind.value)) {
+    <nz-form-item formGroupName="schema">
+      <nz-form-label nzRequired>Schema Key</nz-form-label>
+      <nz-form-control nzHasFeedback [nzAutoTips]="tips.schemaKey">
+        <input nz-input formControlName="key" placeholder="Please enter the schema key" />
+      </nz-form-control>
+    </nz-form-item>
+  }
+  @if (kind.value === 'nav') {
+    <nz-form-item>
+      <nz-form-label>Font Icon</nz-form-label>
+      <nz-form-control nzHasFeedback>
+        <input nz-input formControlName="icon" placeholder="Ant Design Icon" />
+      </nz-form-control>
+    </nz-form-item>
+  }
+  <nz-form-item>
+    <nz-form-label>Description</nz-form-label>
+    <nz-form-control nzHasFeedback>
+      <textarea
+        nz-input
+        formControlName="description"
+        placeholder="Describe the purpose of the page"
+        rows="3"
+      ></textarea>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>Status</nz-form-label>
+    <nz-form-control>
+      <nz-switch formControlName="status"></nz-switch>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *nzModalFooter>
+  <button nz-button type="button" nzType="default" (click)="close()">Cancel</button>
+  <button nz-button nzType="primary" form="form" [disabled]="!form.valid">Submit</button>
+</div>

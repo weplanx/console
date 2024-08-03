@@ -1,0 +1,91 @@
+<ng-template #menuRef>
+  <button nzSize="large" nz-button nzType="text" routerLink="/admin">
+    <span nz-icon nzType="control" nzTheme="outline"></span> Admin
+  </button>
+  <button nzSize="large" nz-button nzType="text" routerLink="/filebrowser">
+    <span nz-icon nzType="inbox" nzTheme="outline"></span> File Browser
+  </button>
+  <button nzSize="large" nz-button nzType="text" routerLink="/audit">
+    <span nz-icon nzType="audit" nzTheme="outline"></span> Audit
+  </button>
+  <br />
+  @if (experiment) {
+    <button nzSize="large" nz-button nzType="text" routerLink="/experiment">
+      <span nz-icon nzType="experiment" nzTheme="outline"></span> Experiment
+    </button>
+  }
+</ng-template>
+
+<nz-row nzJustify="space-between" nzAlign="middle">
+  <nz-col>
+    <nz-space nzAlign="center" nzSize="large">
+      <ng-container *nzSpaceItem>
+        <button
+          nz-button
+          nzType="text"
+          nz-popover
+          [nzPopoverContent]="menuRef"
+          nzPopoverPlacement="bottomLeft"
+          nzPopoverTrigger="click"
+        >
+          <i nz-icon nzType="appstore" nzTheme="outline"></i>
+        </button>
+      </ng-container>
+
+      <ng-container *nzSpaceItem>
+        @if (breadcrumbs) {
+          <ng-container *ngTemplateOutlet="breadcrumbs"></ng-container>
+        } @else {
+          <nz-breadcrumb nzAutoGenerate></nz-breadcrumb>
+        }
+      </ng-container>
+    </nz-space>
+  </nz-col>
+  <nz-col>
+    <ng-content></ng-content>
+  </nz-col>
+  <nz-col>
+    @if (app.user(); as u) {
+      <div
+        class="center"
+        nz-popover
+        [nzPopoverContent]="centerRef"
+        nzPopoverPlacement="bottomRight"
+        nzPopoverTrigger="click"
+      >
+        <nz-badge nzDot>
+          @if (u.avatar) {
+            <nz-avatar nzIcon="user" [nzSrc]="[u.avatar] | wpxAssets" [nzShape]="'square'"></nz-avatar>
+          } @else {
+            <nz-avatar nzIcon="user" [nzShape]="'square'"></nz-avatar>
+          }
+        </nz-badge>
+      </div>
+    }
+  </nz-col>
+</nz-row>
+
+<ng-template #centerRef>
+  <nz-tabset style="width: 360px" [nzTabBarExtraContent]="actions">
+    <ng-template #actions>
+      <nz-space>
+        <button *nzSpaceItem nz-button nzType="text" (click)="profile()">
+          <i nz-icon nzType="user"></i>
+        </button>
+        <button *nzSpaceItem nz-button nzType="text" (click)="logout()">
+          <i nz-icon nzType="logout"></i>
+        </button>
+      </nz-space>
+    </ng-template>
+    <nz-tab nzTitle="Notification(0)">
+      <nz-list nzItemLayout="horizontal">
+        <nz-list-empty></nz-list-empty>
+      </nz-list>
+    </nz-tab>
+    <nz-tab nzTitle="Alarm(0)">
+      <nz-list nzItemLayout="horizontal">
+        <nz-list-empty></nz-list-empty>
+      </nz-list>
+    </nz-tab>
+  </nz-tabset>
+</ng-template>

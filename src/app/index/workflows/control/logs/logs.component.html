@@ -1,0 +1,85 @@
+<nz-layout style="height: 100%; background: transparent">
+  <nz-page-header>
+    @if (doc.schedule!.jobs[index].option; as option) {
+      <nz-page-header-title>
+        <b>{{ option.method }}</b>
+        {{ option.url }}
+      </nz-page-header-title>
+    }
+
+    <nz-page-header-footer>
+      <nz-row nzAlign="middle" nzJustify="space-between">
+        <nz-col>
+          <nz-space nzAlign="center">
+            <nz-range-picker
+              *nzSpaceItem
+              style="width: 320px"
+              [nzShowTime]="{ nzFormat: 'HH:mm' }"
+              nzFormat="yyyy-MM-dd HH:mm"
+              [(ngModel)]="timestamp"
+              (ngModelChange)="getData(true)"
+              nz-tooltip="The recommended range should not exceed one day"
+            ></nz-range-picker>
+            <wpx-toolbox *nzSpaceItem [wpxModel]="model" (wpxClear)="clear()" (wpxRefresh)="getData(true)">
+            </wpx-toolbox>
+          </nz-space>
+        </nz-col>
+        <nz-col></nz-col>
+        <nz-col>
+          @if (model.selection.size; as size) {
+            <button nz-button nzType="dashed" nz-dropdown [nzDropdownMenu]="menu"> {{ size }} selected items </button>
+            <nz-dropdown-menu #menu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item (click)="wpxTable.clearSelections()"> Unselect </li>
+                <li nz-menu-item> Export </li>
+              </ul>
+            </nz-dropdown-menu>
+          }
+        </nz-col>
+      </nz-row>
+    </nz-page-header-footer>
+  </nz-page-header>
+
+  <nz-content style="overflow: hidden auto">
+    <wpx-table
+      #wpxTable
+      [wpxModel]="model"
+      [wpxColumns]="[
+        {
+          title: 'Timestamp',
+          key: 'timestamp',
+          width: '200px',
+          format: 'date'
+        },
+        {
+          title: 'Response',
+          key: 'response',
+          render: response,
+          ellipsis: true
+        }
+      ]"
+      [wpxAction]="action"
+      [wpxX]="'1600px'"
+      [wpxBodyStyle]="{ height: '100%' }"
+      (wpxChange)="getData()"
+    >
+      <ng-template #response let-data>
+        {{ data.response.status }}
+        <nz-divider nzType="vertical"></nz-divider>
+        @if (data.response.body) {
+          <a (click)="openResponse(data)">
+            <code>{{ data.response.body }}</code>
+          </a>
+        } @else {
+          None
+        }
+      </ng-template>
+    </wpx-table>
+  </nz-content>
+</nz-layout>
+
+<ng-template #action let-data>
+  <button nz-button nzType="text" disabled>
+    <span nz-icon nzType="ellipsis" nzTheme="outline"></span>
+  </button>
+</ng-template>

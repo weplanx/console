@@ -1,0 +1,44 @@
+<nz-table nzTemplateMode>
+  <thead>
+    <tr>
+      <th><b>Event</b></th>
+      <th nzRight nzWidth="200px"><b>Recent</b></th>
+      <th nzRight nzWidth="200px"><b>Next</b></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (job of doc.schedule!.jobs; track i; let i = $index) {
+      <tr>
+        <td>
+          @switch (job.mode) {
+            @case ('HTTP') {
+              <nz-tag>URL</nz-tag>
+              <a (click)="openLogs(i)">
+                <b>{{ job.option.method }}</b>
+                {{ job.option.url }}
+              </a>
+            }
+          }
+        </td>
+        <td>
+          @if (state && state.jobs[i]!.schedule_state; as v) {
+            @if (state!.status) {
+              {{ v.prev | date: 'medium' }}
+            } @else {
+              -
+            }
+          }
+        </td>
+        <td>
+          @if (state && state.jobs[i]!.schedule_state; as v) {
+            @if (state!.status) {
+              {{ v.next | date: 'medium' }}
+            } @else {
+              -
+            }
+          }
+        </td>
+      </tr>
+    }
+  </tbody>
+</nz-table>

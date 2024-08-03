@@ -1,0 +1,59 @@
+<form nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-row [nzGutter]="24">
+    <nz-col [nzSpan]="16">
+      <nz-form-item>
+        <nz-form-label nzRequired>Queue Name</nz-form-label>
+        <nz-form-control nzHasFeedback [nzAutoTips]="tips.name">
+          <input nz-input formControlName="name" placeholder="Please enter the queue name" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired>Queue Subjects</nz-form-label>
+        <nz-form-control nzHasFeedback [nzAutoTips]="tips.subjects">
+          <nz-select nzMode="tags" nzPlaceHolder="Please enter the queue subjects" formControlName="subjects">
+            @for (v of form.get('subjects')?.value; track v) {
+              <nz-option [nzLabel]="v" [nzValue]="v"></nz-option>
+            }
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>Description</nz-form-label>
+        <nz-form-control nzHasFeedback>
+          <textarea nz-input rows="4" formControlName="description" placeholder="Describe a function"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+    </nz-col>
+    <nz-col [nzSpan]="8">
+      <nz-form-item>
+        <nz-form-label nzTooltipTitle="-1 is unlimited">Max Msgs</nz-form-label>
+        <nz-form-control>
+          <nz-input-number style="width: 100%" formControlName="max_msgs" [nzMin]="-1" [nzStep]="1"></nz-input-number>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzTooltipTitle="-1 is unlimited">Max Bytes</nz-form-label>
+        <nz-form-control>
+          <nz-input-number style="width: 100%" formControlName="max_bytes" [nzMin]="-1" [nzStep]="1"></nz-input-number>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>Max Age</nz-form-label>
+        <nz-form-control>
+          <nz-input-number
+            style="width: 100%"
+            formControlName="max_age"
+            [nzMin]="0"
+            [nzStep]="1"
+            [nzFormatter]="formatterSec"
+          ></nz-input-number>
+        </nz-form-control>
+      </nz-form-item>
+    </nz-col>
+  </nz-row>
+</form>
+
+<div *nzModalFooter>
+  <button nz-button type="button" nzType="default" (click)="close()">Cancel</button>
+  <button nz-button nzType="primary" form="form" [disabled]="!form.valid">Submit</button>
+</div>

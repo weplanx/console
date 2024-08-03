@@ -1,0 +1,18 @@
+.wpx-richtext {
+  font-size: 15px;
+  min-width: 800px;
+  padding: 12px;
+}
+
+.cdx-media {
+  & img,
+  & video {
+    max-width: 100%;
+    vertical-align: bottom;
+  }
+
+  .cdx-button {
+    width: 100%;
+    min-height: 200px;
+  }
+}

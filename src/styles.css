@@ -1,0 +1,14 @@
+@import 'https://cdn.kainonly.com/npm/cropperjs@1.6.0/dist/cropper.min.css';
+
+nz-header.nav {
+  height: 64px;
+  line-height: 64px;
+  padding: 0 12px;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+nz-sider {
+  padding: 8px;
+  border-right: 1px solid #f0f0f0;
+}

@@ -1,0 +1,36 @@
+.photo {
+  width: 100%;
+  cursor: pointer;
+}
+
+.photo img {
+  max-width: 100%;
+}
+
+.position {
+  & div.block {
+    margin-bottom: -1px;
+  }
+
+  & label {
+    border-radius: 0;
+  }
+
+  & div.block:first-child {
+    & label:first-child {
+      border-radius: 2px 0 0 0;
+    }
+    & label:last-child {
+      border-radius: 0 2px 0 0;
+    }
+  }
+
+  & div.block:last-child {
+    & label:first-child {
+      border-radius: 0 0 0 2px;
+    }
+    & label:last-child {
+      border-radius: 0 0 2px 0;
+    }
+  }
+}

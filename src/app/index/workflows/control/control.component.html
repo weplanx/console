@@ -1,0 +1,161 @@
+<nz-layout style="height: 100%; background: transparent">
+  <nz-page-header>
+    <nz-page-header-title>{{ doc.name }}</nz-page-header-title>
+    <nz-page-header-tags>
+      <nz-tag nzColor="blue">
+        @switch (doc.kind) {
+          @case ('schedule') {
+            Schedule
+          }
+        }
+      </nz-tag>
+    </nz-page-header-tags>
+    <nz-page-header-extra>
+      @switch (tabIndex) {
+        @case (0) {
+          <button nz-button nzType="primary" nzShape="circle" [disabled]="!doc.schedule?.status" (click)="sync()">
+            <span nz-icon nzType="sync" nzTheme="outline"></span>
+          </button>
+        }
+        @case (1) {
+          <button nz-button nzType="primary" form="form" nzShape="circle" [disabled]="!form.valid">
+            <span nz-icon nzType="check" nzTheme="outline"></span>
+          </button>
+        }
+      }
+    </nz-page-header-extra>
+    <nz-page-header-footer>
+      <nz-tabset nzSize="small" [(nzSelectedIndex)]="tabIndex">
+        <nz-tab nzTitle="Details" [nzDisabled]="!doc.schedule"></nz-tab>
+        <nz-tab nzTitle="Settings"></nz-tab>
+      </nz-tabset>
+    </nz-page-header-footer>
+  </nz-page-header>
+
+  <nz-content style="overflow: hidden auto">
+    <nz-card [ngSwitch]="tabIndex">
+      @switch (tabIndex) {
+        @case (0) {
+          <app-index-workflows-control-state [doc]="doc"></app-index-workflows-control-state>
+        }
+        @case (1) {
+          <form nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+            <nz-form-item>
+              <nz-form-label nzRequired> Service Node </nz-form-label>
+              <nz-form-control nzHasFeedback [nzAutoTips]="tips.ref">
+                <nz-select
+                  style="width: 320px"
+                  formControlName="ref"
+                  nzAllowClear
+                  nzPlaceHolder="Please select a service node"
+                  nzShowSearch
+                  nzServerSearch
+                  (nzOnSearch)="scheduleText$.next($event)"
+                >
+                  @for (item of scheduleItems; track item._id) {
+                    <nz-option [nzValue]="item._id" [nzLabel]="item.name"> </nz-option>
+                  }
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label nzRequired> Status </nz-form-label>
+              <nz-form-control>
+                <nz-switch formControlName="status"></nz-switch>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-divider nzPlain nzText="Events" nzOrientation="left"></nz-divider>
+            <nz-collapse
+              formArrayName="jobs"
+              [nzBordered]="false"
+              cdkDropList
+              (cdkDropListDropped)="sort($event, jobs)"
+            >
+              @for (x of jobs.controls; track i; let i = $index) {
+                <ng-container [formGroupName]="i">
+                  <nz-collapse-panel [nzHeader]="headerRef" [nzExtra]="extraRef" cdkDrag>
+                    <ng-template #headerRef>
+                      <b># {{ i + 1 }}</b>
+                    </ng-template>
+                    <ng-template #extraRef>
+                      <nz-button-group>
+                        <button nz-button nzType="text" type="button" (click)="removeJob(i)">
+                          <i nz-icon nzType="minus-circle" nzTheme="outline"></i>
+                        </button>
+                        <button nz-button nzType="text" type="button" cdkDragHandle>
+                          <i nz-icon nzType="holder" nzTheme="outline"></i>
+                        </button>
+                      </nz-button-group>
+                    </ng-template>
+                    <nz-form-item>
+                      <nz-form-label nzRequired> Trigger </nz-form-label>
+                      <nz-form-control nzHasFeedback>
+                        <nz-select formControlName="mode" nzAllowClear nzPlaceHolder="Please select a trigger">
+                          <nz-option nzValue="HTTP" nzLabel="HTTP: send request"> </nz-option>
+                        </nz-select>
+                      </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                      <nz-form-label nzRequired> Spec </nz-form-label>
+                      <nz-form-control nzHasFeedback>
+                        <nz-cron-expression formControlName="spec" nzType="spring"></nz-cron-expression>
+                      </nz-form-control>
+                    </nz-form-item>
+
+                    <ng-container formGroupName="option">
+                      @switch (x.get('mode')!.value) {
+                        @case ('HTTP') {
+                          <nz-form-item>
+                            <nz-form-label nzRequired> URL </nz-form-label>
+                            <nz-form-control>
+                              <nz-input-group nzCompact>
+                                <nz-select style="width: 15%" formControlName="method">
+                                  <nz-option [nzLabel]="'GET'" [nzValue]="'GET'"></nz-option>
+                                  <nz-option [nzLabel]="'POST'" [nzValue]="'POST'"></nz-option>
+                                </nz-select>
+                                <input
+                                  style="width: 85%"
+                                  formControlName="url"
+                                  type="url"
+                                  nz-input
+                                  placeholder="Please enter the URL"
+                                />
+                              </nz-input-group>
+                            </nz-form-control>
+                          </nz-form-item>
+                          <nz-form-item>
+                            <nz-form-label> Headers </nz-form-label>
+                            <nz-form-control nzHasFeedback>
+                              <textarea
+                                nz-input
+                                formControlName="headers"
+                                placeholder="Please enter headers in JSON format"
+                              ></textarea>
+                            </nz-form-control>
+                          </nz-form-item>
+                          <nz-form-item>
+                            <nz-form-label> Body </nz-form-label>
+                            <nz-form-control nzHasFeedback>
+                              <textarea
+                                nz-input
+                                formControlName="body"
+                                placeholder="Please enter body in JSON format"
+                              ></textarea>
+                            </nz-form-control>
+                          </nz-form-item>
+                        }
+                      }
+                    </ng-container>
+                  </nz-collapse-panel>
+                </ng-container>
+              }
+            </nz-collapse>
+            <button nzBlock type="button" nzType="text" nzSize="large" nz-button (click)="appendJob()">
+              <i nz-icon nzType="plus-circle"></i> Create
+            </button>
+          </form>
+        }
+      }
+    </nz-card>
+  </nz-content>
+</nz-layout>

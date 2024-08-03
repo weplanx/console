@@ -1,0 +1,20 @@
+<form nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-form-item>
+    <nz-form-label nzRequired>Password Strength</nz-form-label>
+    <nz-form-control>
+      <nz-radio-group formControlName="PwdStrategy">
+        <label nz-radio [nzValue]="0">Unlimited</label>
+        <label nz-radio [nzValue]="1">Requires uppercase and lowercase letters</label>
+        <label nz-radio [nzValue]="2">Requires uppercase letters, lowercase letters and numbers</label>
+        <label nz-radio [nzValue]="3">
+          Requires uppercase letters, lowercase letters, numbers, and special characters
+        </label>
+      </nz-radio-group>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *nzModalFooter>
+  <button nz-button type="button" nzType="default" (click)="close()">Cancel</button>
+  <button nz-button nzType="primary" form="form" [disabled]="!form.valid">Submit</button>
+</div>

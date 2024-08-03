@@ -1,0 +1,33 @@
+<nz-card
+  [ngStyle]="{ height: 'calc(100% - ' + (!wpxModel.advanced() ? 0 : wpxOffset) + 'px)' }"
+  [nzBodyStyle]="wpxBodyStyle"
+  [nzTitle]="wpxTitle"
+  [nzExtra]="wpxExtra"
+>
+  <nz-list style="height: calc(100% - 60px); overflow: auto" [nzLoading]="wpxModel.loading()">
+    @if (wpxModel.total === 0) {
+      <nz-list-empty></nz-list-empty>
+    }
+    @for (data of wpxModel.data(); track data._id) {
+      <nz-list-item style="padding: 0" (contextmenu)="openActions($event, data)">
+        <ng-container *ngTemplateOutlet="wpxRender; context: { $implicit: data }"></ng-container>
+      </nz-list-item>
+    }
+  </nz-list>
+  <nz-row style="height: 64px" nzAlign="middle" nzJustify="end">
+    <nz-space nzAlign="center">
+      <span *nzSpaceItem>{{ wpxModel.total }} selected items</span>
+      <nz-pagination
+        *nzSpaceItem
+        nzShowSizeChanger
+        nzHideOnSinglePage
+        [nzTotal]="wpxModel.total"
+        [nzPageSizeOptions]="[10, 20, 50]"
+        [(nzPageIndex)]="wpxModel.page"
+        [(nzPageSize)]="wpxModel.pagesize"
+        (nzPageIndexChange)="wpxChange.emit()"
+        (nzPageSizeChange)="wpxChange.emit()"
+      ></nz-pagination>
+    </nz-space>
+  </nz-row>
+</nz-card>

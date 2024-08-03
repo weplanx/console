@@ -1,0 +1,99 @@
+<ng-template #titleRef>
+  <nz-space nzAlign="center">
+    <wpx-keyword
+      *nzSpaceItem
+      [wpxWidth]="320"
+      [wpxModel]="model"
+      [wpxKeys]="['name']"
+      (wpxSubmit)="getData()"
+      wpxPlaceholder="Name"
+    ></wpx-keyword>
+    <wpx-toolbox *nzSpaceItem [wpxModel]="model" (wpxClear)="getData()" (wpxRefresh)="getData()"> </wpx-toolbox>
+  </nz-space>
+</ng-template>
+
+<ng-template #extraRef>
+  <nz-space nzAlign="center">
+    @if (model.selection.size; as size) {
+      <button *nzSpaceItem nz-button nzType="dashed" nz-dropdown [nzDropdownMenu]="menu">
+        {{ size }} selected items
+      </button>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu>
+          <li nz-menu-item (click)="wpxTable.clearSelections()"> Unselect </li>
+          <li nz-menu-item nzDanger (click)="bulkDelete()"> Delete </li>
+        </ul>
+      </nz-dropdown-menu>
+    }
+    <button *nzSpaceItem nz-button (click)="openPublish()"> Publish </button>
+    <button *nzSpaceItem nz-button nzType="primary" (click)="openForm()"> Create </button>
+  </nz-space>
+</ng-template>
+
+<wpx-table
+  #wpxTable
+  [wpxTitle]="titleRef"
+  [wpxExtra]="extraRef"
+  [wpxModel]="model"
+  [wpxColumns]="[
+    {
+      title: 'Queue Name',
+      key: 'name',
+      width: '240px',
+      render: name
+    },
+    {
+      title: 'Subjects',
+      key: 'subjects',
+      width: '240px',
+      render: subjects
+    },
+    {
+      title: 'Detail',
+      key: 'detail',
+      width: '600px',
+      render: detail
+    }
+  ]"
+  [wpxAction]="action"
+  (wpxChange)="getData()"
+>
+  <ng-template #name let-data>
+    {{ data.name }}
+    @if (data.description) {
+      <span nz-icon nzType="question-circle" nzTheme="outline" [nz-tooltip]="data.description"></span>
+    }
+  </ng-template>
+  <ng-template #subjects let-data>
+    @if (data.subjects.length > 1) {
+      {{ data.subjects[0] }}
+      <span nz-icon nzType="info-circle" nzTheme="outline" [nz-tooltip]="data.subjects"></span>
+    } @else {
+      {{ data.subjects }}
+    }
+  </ng-template>
+  <ng-template #detail let-data>
+    @if (data.max_msgs && data.max_msgs !== -1) {
+      <nz-tag> Max Msgs: {{ data.max_msgs }} </nz-tag>
+    }
+    @if (data.max_bytes && data.max_bytes !== -1) {
+      <nz-tag> Max Bytes: {{ data.max_bytes | nzBytes }} </nz-tag>
+    }
+    @if (data.max_age) {
+      <nz-tag> Max Age: {{ data.max_age / 1e9 }}s </nz-tag>
+    }
+    <a (click)="openDetail(data)">View Details</a>
+  </ng-template>
+</wpx-table>
+
+<ng-template #action let-data>
+  <button nz-button nzType="text" nz-dropdown [nzDropdownMenu]="menu">
+    <span nz-icon nzType="ellipsis" nzTheme="outline"></span>
+  </button>
+  <nz-dropdown-menu #menu="nzDropdownMenu">
+    <ul nz-menu>
+      <li nz-menu-item (click)="openForm(data)"> Modify </li>
+      <li nz-menu-item nzDanger (click)="delete(data)"> Delete </li>
+    </ul>
+  </nz-dropdown-menu>
+</ng-template>

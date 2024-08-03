@@ -1,0 +1,21 @@
+<form nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-form-item>
+    <nz-form-label nzRequired> Workflow Name </nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.name">
+      <input nz-input formControlName="name" placeholder="Please enter the workflow name" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired> Kind </nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.kind">
+      <nz-select formControlName="kind" nzAllowClear nzPlaceHolder="Please select a kind">
+        <nz-option nzValue="schedule" nzLabel="Schedule"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *nzModalFooter>
+  <button nz-button type="button" nzType="default" (click)="close()">Cancel</button>
+  <button nz-button nzType="primary" form="form" [disabled]="!form.valid">Submit</button>
+</div>

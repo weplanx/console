@@ -1,0 +1,76 @@
+<form nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-row [nzGutter]="[24, 24]">
+    <nz-col [nzSpan]="12">
+      <nz-form-item>
+        <nz-form-label nzRequired>Project Name</nz-form-label>
+        <nz-form-control nzHasFeedback [nzAutoTips]="tips.name">
+          <input nz-input formControlName="name" placeholder="Please enter a name" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>Expire</nz-form-label>
+        <nz-form-control>
+          <nz-date-picker
+            style="width: 100%"
+            formControlName="expire"
+            nzPlaceHolder="The default is long"
+          ></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label> Secret ID and Key</nz-form-label>
+        <nz-form-control nzExtra="For OpenAPI signature authentication, etc">
+          <nz-input-group nzCompact>
+            <input
+              style="width: 40%"
+              readonly
+              type="text"
+              nz-input
+              formControlName="secret_id"
+              placeholder="SECRET ID"
+            />
+            <input
+              style="width: 50%"
+              readonly
+              type="text"
+              nz-input
+              formControlName="secret_key"
+              placeholder="SECERT KEY"
+            />
+            <button style="width: 10%" nz-button type="button" (click)="generateSecret()">
+              <span nz-icon nzType="sync"></span>
+            </button>
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+    </nz-col>
+    <nz-col [nzSpan]="12">
+      <nz-form-item>
+        <nz-form-label nzRequired>Project Kind</nz-form-label>
+        <nz-form-control nzHasFeedback [nzAutoTips]="tips.name">
+          <nz-select formControlName="kind" nzAllowClear nzPlaceHolder="Cannot be modified">
+            <nz-option nzValue="standard" nzLabel="Standard"></nz-option>
+            <nz-option nzValue="cms" nzLabel="Headless CMS"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired> Namespace</nz-form-label>
+        <nz-form-control nzHasFeedback [nzAutoTips]="tips.namespace">
+          <input nz-input formControlName="namespace" placeholder="Unique and cannot be modified" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired>Status</nz-form-label>
+        <nz-form-control>
+          <nz-switch formControlName="status"></nz-switch>
+        </nz-form-control>
+      </nz-form-item>
+    </nz-col>
+  </nz-row>
+</form>
+
+<div *nzModalFooter>
+  <button nz-button type="button" nzType="default" (click)="close()">Cancel</button>
+  <button nz-button nzType="primary" form="form" [disabled]="!form.valid">Submit</button>
+</div>

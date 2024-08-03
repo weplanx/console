@@ -1,0 +1,85 @@
+<nz-layout style="height: 100%; background: transparent">
+  <nz-page-header>
+    <nz-page-header-title>Log: {{ topic }}</nz-page-header-title>
+    <nz-page-header-footer>
+      <nz-row nzAlign="middle" nzJustify="space-between">
+        <nz-col>
+          <nz-space nzAlign="center">
+            <nz-input-group *nzSpaceItem style="width: 320px" nzSuffixIcon="search">
+              <input nz-input [(ngModel)]="clientText" (keyup.enter)="getData(true)" placeholder="Client" />
+            </nz-input-group>
+            <nz-range-picker
+              *nzSpaceItem
+              style="width: 320px"
+              [nzShowTime]="{ nzFormat: 'HH:mm' }"
+              nzFormat="yyyy-MM-dd HH:mm"
+              [(ngModel)]="timestamp"
+              (ngModelChange)="getData(true)"
+              nz-tooltip="The recommended range should not exceed one day"
+            ></nz-range-picker>
+            <wpx-toolbox *nzSpaceItem [wpxModel]="model" (wpxClear)="clear()" (wpxRefresh)="getData(true)">
+            </wpx-toolbox>
+          </nz-space>
+        </nz-col>
+        <nz-col></nz-col>
+        <nz-col>
+          <ng-container *ngIf="model.selection.size as size">
+            <button nz-button nzType="dashed" nz-dropdown [nzDropdownMenu]="menu"> {{ size }} selected items </button>
+            <nz-dropdown-menu #menu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item (click)="wpxTable.clearSelections()"> Unselect </li>
+                <li nz-menu-item> Export </li>
+              </ul>
+            </nz-dropdown-menu>
+          </ng-container>
+        </nz-col>
+      </nz-row>
+    </nz-page-header-footer>
+  </nz-page-header>
+
+  <nz-content style="overflow: hidden auto">
+    <wpx-table
+      #wpxTable
+      [wpxModel]="model"
+      [wpxColumns]="[
+        {
+          title: 'Timestamp',
+          key: 'timestamp',
+          width: '200px',
+          format: 'date'
+        },
+        {
+          title: 'Client',
+          key: 'client',
+          width: '200px',
+          render: client
+        },
+        {
+          title: 'Payload',
+          key: 'payload',
+          render: payload,
+          ellipsis: true
+        }
+      ]"
+      [wpxAction]="action"
+      [wpxX]="'1600px'"
+      [wpxBodyStyle]="{ height: '100%' }"
+      (wpxChange)="getData()"
+    >
+      <ng-template #client let-data>
+        {{ data.metadata.client }}
+      </ng-template>
+      <ng-template #payload let-data>
+        <a (click)="openResponse(data)">
+          <code>{{ data.payload | json }}</code>
+        </a>
+      </ng-template>
+    </wpx-table>
+  </nz-content>
+</nz-layout>
+
+<ng-template #action let-data>
+  <button nz-button nzType="text" disabled>
+    <span nz-icon nzType="ellipsis" nzTheme="outline"></span>
+  </button>
+</ng-template>

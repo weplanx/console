@@ -1,0 +1,72 @@
+<nz-layout style="height: 100%; background: transparent">
+  <nz-page-header>
+    <nz-page-header-title>{{ doc.name }}</nz-page-header-title>
+    <nz-page-header-extra>
+      <nz-space nzAlign="center">
+        <button
+          *nzSpaceItem
+          nz-button
+          nzType="primary"
+          nzShape="circle"
+          nz-popconfirm
+          nzPopconfirmTitle="Are you sure you want to synchronize the queue?"
+          (nzOnConfirm)="sync()"
+        >
+          <span nz-icon nzType="sync" nzTheme="outline"></span>
+        </button>
+      </nz-space>
+    </nz-page-header-extra>
+  </nz-page-header>
+
+  <nz-content style="overflow: hidden auto">
+    @if (info) {
+      <nz-card>
+        <nz-descriptions nzLayout="vertical" [nzColumn]="3">
+          <nz-descriptions-item nzTitle="Subjects" [nzSpan]="3">
+            <nz-space nzAlign="center" nzWrap>
+              @for (x of info.config.subjects; track x) {
+                <a *nzSpaceItem (click)="openPublish(x)">{{ x }}</a>
+              }
+            </nz-space>
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Max Msgs">
+            @if (info.config.max_msgs !== -1) {
+              {{ info.config.max_msgs }}
+            } @else {
+              Unlimited
+            }
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Max bytes">
+            @if (info.config.max_bytes !== -1) {
+              {{ info.config.max_bytes | nzBytes }}
+            } @else {
+              Unlimited
+            }
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Max Age">
+            @if (info.config.max_age !== 0) {
+              {{ info.config.max_age / 1e9 }} sec
+            } @else {
+              Unlimited
+            }
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Description" [nzSpan]="2">{{ info.config.description }}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Create Time">
+            {{ info.created | date: 'medium' }}
+          </nz-descriptions-item>
+        </nz-descriptions>
+        <nz-divider nzPlain nzText="Real-time Status" nzOrientation="left"></nz-divider>
+        <nz-descriptions nzLayout="vertical" [nzColumn]="3">
+          <nz-descriptions-item nzTitle="Messages">{{ info.state.messages }}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Bytes">{{ info.state.bytes | nzBytes }}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Consumer Count">{{ info.state.consumer_count }}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="First Seq">{{ info.state.first_seq }}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Last Seq">{{ info.state.last_seq }}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Lats Ts">
+            {{ info.state.last_ts | date: 'medium' }}
+          </nz-descriptions-item>
+        </nz-descriptions>
+      </nz-card>
+    }
+  </nz-content>
+</nz-layout>

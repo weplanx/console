@@ -1,0 +1,24 @@
+{
+  "name": "@weplanx/ng",
+  "private": false,
+  "peerDependencies": {
+    "@angular/common": "~17.3.0",
+    "@angular/core": "~17.3.0",
+    "ng-zorro-antd": "~17.3.0",
+    "idb-keyval": "*"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false,
+  "keywords": [
+    "weplanx",
+    "angular",
+    "ng-zorro-antd"
+  ],
+  "author": {
+    "name": "kain",
+    "email": "zhangtqx@vip.qq.com"
+  },
+  "license": "BSD-3-Clause License"
+}

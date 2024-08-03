@@ -1,0 +1,31 @@
+<form nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-form-item>
+    <nz-form-label nzRequired>EMQX Host</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.EmqxHost">
+      <input nz-input formControlName="EmqxHost" placeholder="Please enter the EMQX Host" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>EMQX ApiKey</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.EmqxApiKey">
+      <input nz-input formControlName="EmqxApiKey" placeholder="Please enter the EMQX ApiKey" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>EMQX SecretKey</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.EmqxSecretKey">
+      <input
+        nz-input
+        type="password"
+        autocomplete="new-password"
+        formControlName="EmqxSecretKey"
+        placeholder="Please enter the EMQX SecretKey"
+      />
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *nzModalFooter>
+  <button nz-button type="button" nzType="default" (click)="close()">Cancel</button>
+  <button nz-button nzType="primary" form="form" [disabled]="!form.valid">Submit</button>
+</div>

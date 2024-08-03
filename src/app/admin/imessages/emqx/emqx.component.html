@@ -1,0 +1,47 @@
+<nz-layout style="height: 100%; background: transparent">
+  <nz-page-header>
+    <nz-page-header-title>EMQX Cluster</nz-page-header-title>
+    <nz-page-header-extra>
+      <nz-space>
+        <button nz-button nzType="primary" nzShape="circle" (click)="openForm()">
+          <span nz-icon nzType="edit" nzTheme="outline"></span>
+        </button>
+      </nz-space>
+    </nz-page-header-extra>
+  </nz-page-header>
+
+  <nz-content style="height: 100%">
+    <nz-card>
+      <nz-list nzItemLayout="vertical">
+        @if (nodes.length === 0) {
+          <nz-list-empty></nz-list-empty>
+        }
+        @for (item of nodes; track item.node) {
+          <nz-list-item>
+            <ng-template #nodeText>
+              {{ item.node }} <nz-tag>{{ item.version }}</nz-tag>
+            </ng-template>
+            <nz-descriptions [nzTitle]="nodeText" nzLayout="vertical" [nzColumn]="3">
+              <nz-descriptions-item nzTitle="CPU">
+                {{ item.load1 }} / {{ item.load5 }} / {{ item.load15 }}
+              </nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Connections">
+                {{ item.connections }}
+              </nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Status">
+                <ng-container [ngSwitch]="item.node_status">
+                  <ng-container *ngSwitchCase="'running'">
+                    <nz-badge nzStatus="processing" nzText="Running"></nz-badge>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'stopped'">
+                    <nz-badge nzStatus="error" nzText="Terminate"></nz-badge>
+                  </ng-container>
+                </ng-container>
+              </nz-descriptions-item>
+            </nz-descriptions>
+          </nz-list-item>
+        }
+      </nz-list>
+    </nz-card>
+  </nz-content>
+</nz-layout>

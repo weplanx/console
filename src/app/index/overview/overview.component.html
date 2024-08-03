@@ -1,0 +1,176 @@
+<nz-page-header [nzGhost]="false">
+  <nz-page-header-title>{{ data.name }}</nz-page-header-title>
+  <nz-page-header-tags>
+    <nz-tag nzColor="blue" [ngSwitch]="data.kind">
+      @switch (data.kind) {
+        @case ('standard') {
+          Standard
+        }
+        @case ('cms') {
+          Headless CMS
+        }
+      }
+    </nz-tag>
+  </nz-page-header-tags>
+  <nz-page-header-extra>
+    <button nz-button nzType="primary" nzShape="circle" (click)="openForm()">
+      <span nz-icon nzType="edit" nzTheme="outline"></span>
+    </button>
+  </nz-page-header-extra>
+  <nz-page-header-content>
+    <nz-descriptions nzSize="small" [nzColumn]="3" nzLayout="vertical">
+      <nz-descriptions-item nzTitle="Namespace">
+        <span nz-typography [nzContent]="data.namespace" nzCopyable></span>
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="SECRET ID">
+        <span nz-typography [nzContent]="data.secret_id" nzCopyable></span>
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="SECRET KEY">
+        <span nz-typography [nzContent]="data.secret_key" nzCopyable></span>
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Expire">
+        @if (data.expire) {
+          Expire in {{ data.expire | date: 'longDate' }}
+        } @else {
+          Long
+        }
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Create Time">
+        {{ data.create_time | date: 'medium' }}
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Update Time">
+        {{ data.update_time | date: 'medium' }}
+      </nz-descriptions-item>
+    </nz-descriptions>
+  </nz-page-header-content>
+  <nz-page-header-footer>
+    <nz-tabset nzSize="small" [(nzSelectedIndex)]="tabIndex">
+      <nz-tab nzTitle="Deployment"></nz-tab>
+      <nz-tab nzTitle="OpenAPI"></nz-tab>
+    </nz-tabset>
+  </nz-page-header-footer>
+</nz-page-header>
+
+<nz-content style="overflow: hidden auto; padding: 8px">
+  @switch (tabIndex) {
+    @case (0) {
+      <nz-alert
+        nzBanner
+        nzType="info"
+        nzMessage="Please connect to the cluster. Deployment needs to be associated with the cluster before it can be used."
+      ></nz-alert>
+      <nz-page-header [nzGhost]="false">
+        <nz-page-header-title>
+          @if (data.cluster) {
+            Connected: {{ cluster!.name }}
+          } @else {
+            None
+          }
+          <a (click)="openCluster()">
+            <span nz-icon nzType="edit" nzTheme="outline"></span>
+          </a>
+        </nz-page-header-title>
+        @if (data.cluster) {
+          <nz-page-header-tags>
+            @if (clusterInfo; as info) {
+              <nz-tag>{{ info.version }}</nz-tag>
+              <nz-tag>CPU：{{ info.cpu }}</nz-tag>
+              <nz-tag>MEM：{{ info.mem | nzBytes }}</nz-tag>
+              <nz-tag>STORAGE：{{ info.storage | nzBytes }}</nz-tag>
+            }
+            @if (cluster?.admin) {
+              <nz-tag nzColor="orange">Admin Cluster</nz-tag>
+            }
+          </nz-page-header-tags>
+        }
+        <nz-page-header-extra>
+          <button nz-button nzShape="circle" nzType="primary" (click)="getTenants()">
+            <span nz-icon nzType="sync" nzTheme="outline"></span>
+          </button>
+        </nz-page-header-extra>
+      </nz-page-header>
+      <nz-card [nzBodyStyle]="{ 'padding-top.px': 12 }">
+        <nz-row [nzGutter]="[8, 8]">
+          <nz-col [nzSpan]="12">
+            <ng-template #natsEditTpl>
+              <button
+                nz-button
+                nzType="text"
+                [disabled]="!data.cluster"
+                nz-popconfirm
+                [nzPopconfirmTitle]="
+                  data.nats
+                    ? 'Are you sure you want to enable NATS tenants?'
+                    : 'Are you sure you want to reset an existing tenant?'
+                "
+                (nzOnConfirm)="deployNats()"
+              >
+                <span nz-icon nzType="deployment-unit" nzTheme="outline"></span>
+              </button>
+            </ng-template>
+            <nz-card nzSize="small" nzType="inner" nzTitle="NATS Tenant" [nzExtra]="natsEditTpl">
+              <p> Create an account to isolate NATS cluster, Kubernetes the nats-system namespace must exist. </p>
+              <nz-descriptions nzSize="small" nzLayout="vertical" [nzColumn]="2">
+                <nz-descriptions-item nzTitle="NKey" [nzSpan]="2">
+                  @if (data.nats && tenants!.nkey) {
+                    <span nz-typography nzCopyable [nzContent]="tenants.nkey"></span>
+                  } @else {
+                    Unset
+                  }
+                </nz-descriptions-item>
+              </nz-descriptions>
+            </nz-card>
+          </nz-col>
+          <nz-col [nzSpan]="12">
+            <ng-template #redisEditTpl>
+              <button nz-button nzType="text" [disabled]="!data.cluster">
+                <span nz-icon nzType="deployment-unit" nzTheme="outline"></span>
+              </button>
+            </ng-template>
+            <nz-card nzSize="small" nzType="inner" nzTitle="Redis Tenant" [nzExtra]="redisEditTpl">
+              <p> Create a new Redis replica in this cluster, Kubernetes the redis-system namespace must exist. </p>
+              <nz-descriptions nzSize="small" nzLayout="vertical" [nzColumn]="2">
+                <nz-descriptions-item nzTitle="Host">
+                  @if (data!.redis && tenants!.redis_host) {
+                    <span nz-typography nzCopyable [nzContent]="tenants.redis_host"></span>
+                  } @else {
+                    Unset
+                  }
+                </nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Auth">
+                  @if (data.redis && tenants.redis_auth) {
+                    <span nz-typography nzCopyable [nzContent]="tenants.redis_auth"></span>
+                  } @else {
+                    Unset
+                  }
+                </nz-descriptions-item>
+              </nz-descriptions>
+            </nz-card>
+          </nz-col>
+        </nz-row>
+      </nz-card>
+    }
+    @case (1) {
+      <nz-alert nzBanner nzType="info" nzMessage="supports CIDR, for example: 192.168.1.0/24"></nz-alert>
+      <nz-card>
+        <nz-table #entryTable nzHideOnSinglePage [nzData]="data.entry ?? []" [nzFooter]="entryActions">
+          <thead>
+            <tr>
+              <th><b>IP Address</b></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of entryTable.data; track item) {
+              <tr>
+                <td>{{ item }}</td>
+              </tr>
+            }
+          </tbody>
+          <ng-template #entryActions>
+            <button nz-button nzType="text" nzBlock (click)="openEntry()">Modify</button>
+          </ng-template>
+        </nz-table>
+      </nz-card>
+    }
+  }
+</nz-content>

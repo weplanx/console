@@ -1,0 +1,83 @@
+<nz-page-header [nzGhost]="false">
+  <nz-page-header-title>{{ data?.name }}</nz-page-header-title>
+  <nz-page-header-tags>
+    <nz-tag nzColor="blue" [ngSwitch]="data?.kind">
+      @switch (data?.kind) {
+        @case ('collection') {
+          Collection
+        }
+        @case ('single') {
+          Single
+        }
+      }
+    </nz-tag>
+    <nz-tag>
+      <span nz-icon nzType="database" nzTheme="outline"></span>
+      {{ data?.schema?.key }}
+    </nz-tag>
+  </nz-page-header-tags>
+  <nz-page-header-content>
+    {{ data?.description | wpxBlank: 'None' }}
+  </nz-page-header-content>
+  <nz-page-header-extra>
+    <nz-space>
+      <button *nzSpaceItem nz-button (click)="openField()">
+        <span nz-icon nzType="plus" nzTheme="outline"></span>
+        Create Field
+      </button>
+      <button *nzSpaceItem nz-button nzType="primary">
+        <span nz-icon nzType="check" nzTheme="outline"></span>
+        Publish
+      </button>
+    </nz-space>
+  </nz-page-header-extra>
+</nz-page-header>
+
+<nz-card nzType="inner">
+  <nz-table nzTemplateMode>
+    <thead>
+      <tr>
+        <th nzWidth="60px" nzAlign="center" nzLeft>
+          <button nz-button nzType="text" disabled>
+            <i nz-icon nzType="holder"></i>
+          </button>
+        </th>
+        <th nzWidth="360px"><b>Field Name</b></th>
+        <th><b>Detail</b></th>
+        <th nzRight nzWidth="60px">
+          <button nz-button nzType="text" disabled>
+            <span nz-icon nzType="setting" nzTheme="outline"></span>
+          </button>
+        </th>
+      </tr>
+    </thead>
+    <tbody cdkDropList (cdkDropListDropped)="sort($event)">
+      @for (field of fields; track field.key) {
+        <tr cdkDrag>
+          <td colspan="4" class="placeholder" *cdkDragPlaceholder> </td>
+          <td nzLeft>
+            <button nz-button nzType="text" cdkDragHandle>
+              <i nz-icon nzType="holder"></i>
+            </button>
+          </td>
+          <td>
+            <nz-tag nzColor="blue">{{ fieldTypeDict[field.type] }}</nz-tag>
+            <span>{{ field.name }}</span>
+          </td>
+          <td></td>
+          <td nzRight>
+            <button nz-button nzType="text" nz-dropdown [nzDropdownMenu]="menu">
+              <span nz-icon nzType="ellipsis" nzTheme="outline"></span>
+            </button>
+            <nz-dropdown-menu #menu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item (click)="openField(field)"> Modify </li>
+                <li nz-menu-item nzDanger (click)="delete(field)"> Delete </li>
+              </ul>
+            </nz-dropdown-menu>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </nz-table>
+</nz-card>

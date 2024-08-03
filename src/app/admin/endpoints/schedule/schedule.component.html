@@ -1,0 +1,58 @@
+<nz-layout style="height: 100%; background: transparent">
+  <nz-page-header>
+    <nz-page-header-title>{{ doc.name }}</nz-page-header-title>
+    <nz-page-header-extra>
+      <nz-space nzAlign="center">
+        <button *nzSpaceItem nz-button nzType="primary" nzShape="circle" (click)="getData()">
+          <span nz-icon nzType="reload" nzTheme="outline"></span>
+        </button>
+      </nz-space>
+    </nz-page-header-extra>
+  </nz-page-header>
+
+  <nz-content style="height: 100%">
+    <nz-card>
+      <nz-table nzSize="middle" nzTemplateMode>
+        <thead>
+          <tr>
+            <th>
+              <span nz-icon nzType="key" nzTheme="outline"></span>
+              <b> Key</b>
+            </th>
+            <th><b>Status</b></th>
+            <th nzRight nzWidth="60px" nzAlign="center">
+              <button nz-button nzType="text" disabled>
+                <span nz-icon nzType="stop" nzTheme="outline"></span>
+              </button>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of items; track item; let i = $index) {
+            <tr>
+              <td>{{ item }}</td>
+              <td>
+                @if (exists.has(item)) {
+                  <nz-badge nzStatus="success" nzText="Connected"></nz-badge>
+                } @else {
+                  <nz-badge nzStatus="error" nzText="Disconnected"></nz-badge>
+                }
+              </td>
+              <td nzRight nzAlign="center">
+                <button
+                  nz-button
+                  nzType="text"
+                  nz-popconfirm
+                  nzPopconfirmTitle="Are you sure you want to terminate this?"
+                  (nzOnConfirm)="stopJob(item)"
+                >
+                  <span nz-icon nzType="stop" nzTheme="outline"></span>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </nz-content>
+</nz-layout>

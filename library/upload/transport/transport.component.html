@@ -1,0 +1,55 @@
+@if (wpx.upload | async) {
+  <nz-button-group>
+    <nz-upload
+      style="z-index: 2"
+      wpxUpload
+      [wpxExt]="wpxExt"
+      [nzMultiple]="true"
+      [nzAccept]="wpxAccept"
+      [nzFileType]="wpxAccept | wpxJoin: ','"
+      (nzChange)="change($event)"
+    >
+      <button nz-button><i nz-icon nzType="upload"></i> Upload</button>
+    </nz-upload>
+    <button
+      style="margin-left: -1px"
+      nz-button
+      nz-popover
+      [nzPopoverContent]="transportRef"
+      [nzPopoverPlacement]="'bottomRight'"
+      [nzPopoverTrigger]="'click'"
+      [(nzPopoverVisible)]="visible"
+    >
+      <nz-badge [nzStatus]="complete ? 'default' : 'processing'">
+        <i nz-icon nzType="cloud-sync"></i>
+      </nz-badge>
+    </button>
+  </nz-button-group>
+}
+
+<ng-template #transportRef>
+  <cdk-virtual-scroll-viewport
+    style="height: 400px; width: 640px; overflow-x: hidden"
+    [itemSize]="40"
+    [minBufferPx]="400"
+    [maxBufferPx]="600"
+  >
+    <nz-list nzSize="small">
+      @if (!!size) {
+        <nz-list-item *cdkVirtualFor="let x of ds" style="height: 40px">
+          <span nz-typography nzEllipsis style="width: 450px">{{ x.name }}</span>
+          <div style="width: 150px">
+            <nz-progress [nzPercent]="x.percent" nzSize="small"></nz-progress>
+          </div>
+        </nz-list-item>
+      } @else {
+        <nz-list-empty></nz-list-empty>
+      }
+    </nz-list>
+  </cdk-virtual-scroll-viewport>
+</ng-template>
+
+<ng-template #messageRef>
+  <ng-container>Please do not switch pages, the file is currently being uploaded.</ng-container>
+  <nz-progress [nzPercent]="percent" nzStatus="active"></nz-progress>
+</ng-template>

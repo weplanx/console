@@ -1,0 +1,37 @@
+.card {
+  transition: height 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.nz-resizable-preview {
+  border-width: 0;
+  border-right-width: 1px;
+}
+
+.column {
+  position: absolute;
+  bottom: -1px;
+  left: -0.5em;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.resize-wrap {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  > span.right {
+    background: #fff;
+    border: 1px solid #ddd;
+    text-align: center;
+    height: 16px;
+    line-height: 16px;
+  }
+}
+
+.drag-placeholder {
+  display: inline-block;
+  margin: 0 8px;
+  padding: 0 8px;
+  border: 2px solid #ddd;
+}

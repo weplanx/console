@@ -1,0 +1,36 @@
+<nz-layout style="height: 100%">
+  <nz-header class="nav">
+    <app-nav></app-nav>
+  </nz-header>
+  <nz-layout>
+    <nz-sider nzWidth="240px" nzTheme="light">
+      <ul nz-menu style="border: none">
+        <li nz-menu-item nzMatchRouter routerLink="store">
+          <span nz-icon nzType="experiment" nzTheme="outline"></span>
+          <span>Indexed DB</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="table">
+          <span nz-icon nzType="experiment" nzTheme="outline"></span>
+          <span>Table</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="upload">
+          <span nz-icon nzType="experiment" nzTheme="outline"></span>
+          <span>Upload</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="article">
+          <span nz-icon nzType="experiment" nzTheme="outline"></span>
+          <span>Article</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="code-editor">
+          <span nz-icon nzType="experiment" nzTheme="outline"></span>
+          <span>Code Editor</span>
+        </li>
+      </ul>
+    </nz-sider>
+    <nz-layout style="overflow: hidden auto">
+      <nz-content>
+        <router-outlet></router-outlet>
+      </nz-content>
+    </nz-layout>
+  </nz-layout>
+</nz-layout>

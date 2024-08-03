@@ -1,0 +1,23 @@
+<form nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-form-item>
+    <nz-form-label nzRequired>Subject</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.subject">
+      <input nz-input formControlName="subject" placeholder="Please enter the subject" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired> Payload </nz-form-label>
+    <nz-form-control nzExtra="*JSON format must be used">
+      <nz-code-editor
+        style="height: 300px; width: 100%"
+        formControlName="payload"
+        [nzEditorOption]="option"
+      ></nz-code-editor>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *nzModalFooter>
+  <button nz-button type="button" nzType="default" (click)="close()">Cancel</button>
+  <button nz-button nzType="primary" form="form" [disabled]="!form.valid">Submit</button>
+</div>

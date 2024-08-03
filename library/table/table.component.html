@@ -1,0 +1,146 @@
+<nz-card
+  class="card"
+  [style.height]="
+    'calc(100% - ' +
+    (wpxModel.advanced() || settings() ? (settings() ? settings()!.nzHeight : wpxModel.advanced()!.nzHeight) : 1) +
+    'px)'
+  "
+  [nzBodyStyle]="wpxBodyStyle"
+  [nzTitle]="wpxTitle"
+  [nzExtra]="wpxExtra"
+>
+  <nz-table
+    #basicTable
+    [ngStyle]="{ 'height.%': 100 }"
+    [nzData]="wpxModel.data()"
+    [nzLoading]="wpxModel.loading()"
+    [nzFrontPagination]="false"
+    [nzShowPagination]="true"
+    [nzShowSizeChanger]="true"
+    [nzShowTotal]="totalRef"
+    [nzTotal]="wpxModel.total"
+    [(nzPageIndex)]="wpxModel.page"
+    [(nzPageSize)]="wpxModel.pagesize"
+    [nzPageSizeOptions]="[20, 50, 100]"
+    (nzPageIndexChange)="wpxChange.emit()"
+    (nzPageSizeChange)="wpxChange.emit()"
+    [nzScroll]="scroll()"
+  >
+    <thead>
+      <tr>
+        <th
+          nzLeft
+          nzAlign="center"
+          nzWidth="60px"
+          [nzChecked]="wpxModel.checked"
+          [nzIndeterminate]="wpxModel.indeterminate"
+          (nzCheckedChange)="wpxModel.setCurrentSelections($event)"
+        ></th>
+        @for (column of columns; track column.key; let isFirst = $first) {
+          @if (column.display) {
+            <th
+              nz-resizable
+              nzBounds="window"
+              [nzDisabled]="!settings()"
+              [nzPreview]="!!settings()"
+              [nzMaxWidth]="420"
+              [nzMinWidth]="100"
+              [nzWidth]="column.width ?? null"
+              [nzLeft]="isFirst ? '60px' : false"
+              (nzResize)="resize($event, column)"
+              (nzResizeEnd)="resizeEnd()"
+            >
+              <b>
+                {{ column.title }}
+              </b>
+              @if (settings()) {
+                <nz-resize-handle nzDirection="right">
+                  <div class="column">{{ column.width }}</div>
+                  <div class="resize-wrap">
+                    <span class="right" nz-icon nzType="more" nzTheme="outline"></span>
+                  </div>
+                </nz-resize-handle>
+              }
+            </th>
+          }
+        }
+        <th nzRight nzWidth="60px">
+          <button nz-button nzType="text" (click)="openSettings()">
+            <span nz-icon nzType="setting" nzTheme="outline"></span>
+          </button>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (data of basicTable.data; track data._id) {
+        <tr>
+          <td
+            nzLeft
+            nzAlign="center"
+            [nzDisabled]="data['disabled']"
+            [nzChecked]="wpxModel.selection.has(data['_id'])"
+            (nzCheckedChange)="$event ? wpxModel.setSelection(data) : wpxModel.removeSelection(data['_id'])"
+          ></td>
+          @for (column of columns; track column.key; let isFirst = $first) {
+            @if (column.display) {
+              <td [nzLeft]="isFirst ? '60px' : false" [nzEllipsis]="column.ellipsis">
+                @if (column.render) {
+                  <ng-container *ngTemplateOutlet="column.render; context: { $implicit: data }"></ng-container>
+                } @else {
+                  @switch (column.format) {
+                    @case ('status') {
+                      @if (data[column.key]) {
+                        <nz-badge nzStatus="processing" nzText="Enabled"></nz-badge>
+                      } @else {
+                        <nz-badge nzStatus="default" nzText="Disabled"></nz-badge>
+                      }
+                    }
+                    @case ('date') {
+                      {{ data[column.key] | date: 'medium' }}
+                    }
+                    @default {
+                      {{ data[column.key] }}
+                    }
+                  }
+                }
+              </td>
+            }
+          }
+          <td nzRight>
+            <ng-container *ngTemplateOutlet="wpxAction; context: { $implicit: data }"></ng-container>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </nz-table>
+  <ng-template #totalRef let-total>A total of {{ total }} records</ng-template>
+</nz-card>
+
+<ng-template #settingsExtraRef>
+  <nz-space nzAlign="center">
+    <button *nzSpaceItem nz-button type="button" (click)="initPreferences()">Initial Customization</button>
+    <button *nzSpaceItem nz-button type="button" (click)="closeSettings()">Close</button>
+  </nz-space>
+</ng-template>
+
+<ng-template #settingsContentRef>
+  <nz-checkbox-wrapper
+    style="width: 100%"
+    cdkDropList
+    cdkDropListOrientation="horizontal"
+    (cdkDropListDropped)="drop($event)"
+  >
+    @for (column of columns; track column.key) {
+      <label
+        style="cursor: move"
+        cdkDrag
+        nz-checkbox
+        [(ngModel)]="column.display"
+        (ngModelChange)="updatePreferences()"
+      >
+        <span class="drag-placeholder" *cdkDragPlaceholder>{{ column.title }}</span>
+        <b>{{ column.title }}</b>
+      </label>
+    }
+  </nz-checkbox-wrapper>
+</ng-template>

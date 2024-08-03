@@ -1,0 +1,36 @@
+<app-blank-page>
+  <nz-row style="min-height: 85%" nzJustify="center" nzAlign="middle">
+    <div style="min-width: 360px">
+      <h2 nz-typography>SIGN IN</h2>
+      <nz-tabset nzLinkRouter>
+        <nz-tab>
+          <a *nzTabLink nz-tab-link routerLink="basic">BASIC</a>
+        </nz-tab>
+        <nz-tab>
+          <a *nzTabLink nz-tab-link routerLink="totp">TOTP</a>
+        </nz-tab>
+        <nz-tab>
+          <a *nzTabLink nz-tab-link routerLink="sms">SMS</a>
+        </nz-tab>
+      </nz-tabset>
+
+      <router-outlet></router-outlet>
+
+      <nz-divider nzPlain nzText="Other"></nz-divider>
+
+      <nz-row nzJustify="space-between" nzAlign="middle">
+        <nz-col>
+          <nz-space nzAlign="center">
+            <a *nzSpaceItem nz-tooltip="Lark" (click)="lark()">
+              <nz-avatar [nzSize]="32" [nzSrc]="['assets', 'Lark.png'] | wpxAssets"></nz-avatar>
+            </a>
+          </nz-space>
+        </nz-col>
+        <nz-col></nz-col>
+        <nz-col>
+          <a routerLink="/forget">Forgot?</a>
+        </nz-col>
+      </nz-row>
+    </div>
+  </nz-row>
+</app-blank-page>

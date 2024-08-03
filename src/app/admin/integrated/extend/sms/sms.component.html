@@ -1,0 +1,47 @@
+<form nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-form-item>
+    <nz-form-label nzRequired>Secret Id</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.SmsSecretId">
+      <input nz-input formControlName="SmsSecretId" placeholder="Please enter the Secret Id" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>Secret Key</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.SmsSecretKey">
+      <input
+        nz-input
+        type="password"
+        autocomplete="new-password"
+        formControlName="SmsSecretKey"
+        placeholder="请输入 Secret Key"
+      />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>Sign</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.SmsSign">
+      <input nz-input formControlName="SmsSign" placeholder="Please enter the Sign" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>App Id</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.SmsAppId">
+      <input nz-input formControlName="SmsAppId" placeholder="Please enter the App Id" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>Region</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.SmsRegion">
+      <nz-select style="width: 100%" formControlName="SmsRegion">
+        <nz-option nzValue="ap-guangzhou" nzLabel="Guangzhou"></nz-option>
+        <nz-option nzValue="ap-beijing" nzLabel="Beijing"></nz-option>
+        <nz-option nzValue="ap-nanjing" nzLabel="Nanjing" nzDisabled></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *nzModalFooter>
+  <button nz-button type="button" nzType="default" (click)="close()">Cancel</button>
+  <button nz-button nzType="primary" form="form" [disabled]="!form.valid">Submit</button>
+</div>

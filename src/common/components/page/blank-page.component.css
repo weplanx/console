@@ -1,0 +1,14 @@
+nz-header {
+  background: #fff;
+}
+
+nz-content {
+  background-size: 100%;
+  background: #fff url('https://cdn.kainonly.com/assets/bg.svg') no-repeat center;
+  flex: 1 1 auto;
+}
+
+nz-footer {
+  background: #fff;
+  text-align: center;
+}

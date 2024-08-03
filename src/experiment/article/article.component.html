@@ -1,0 +1,14 @@
+<nz-card>
+  <form nz-form nzLayout="vertical" [formGroup]="form" (wpxSubmit)="submit($event)">
+    <nz-form-item>
+      <nz-form-control>
+        <app-richtext formControlName="content" (ngModelChange)="test($event)"> </app-richtext>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <button nz-button nzType="primary" [disabled]="!form.valid">Submit</button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-card>

@@ -1,0 +1,13 @@
+<form nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-form-item>
+    <nz-form-label nzRequired>Redirect Url</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.RedirectUrl">
+      <input nz-input formControlName="RedirectUrl" placeholder="Please enter the redirect url" />
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *nzModalFooter>
+  <button nz-button type="button" nzType="default" (click)="close()">Cancel</button>
+  <button nz-button nzType="primary" form="form" [disabled]="!form.valid">Submit</button>
+</div>

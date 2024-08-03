@@ -1,0 +1,8 @@
+.center {
+  height: 100%;
+
+  &:hover,
+  &:focus {
+    cursor: pointer;
+  }
+}

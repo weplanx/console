@@ -1,0 +1,123 @@
+<nz-card>
+  <nz-tabset
+    style="height: 100%"
+    nzTabPosition="left"
+    [(nzSelectedIndex)]="tabIndex"
+    (nzSelectedIndexChange)="saveTabIndex()"
+  >
+    <nz-tab nzTitle="Tencent">
+      <nz-row style="padding-bottom: 12px" nzJustify="space-between">
+        <nz-col>
+          <img [width]="150" [height]="100" [ngSrc]="['assets', 'Tencent-Cloud.svg'] | wpxAssets" alt="" />
+        </nz-col>
+        <nz-col></nz-col>
+        <nz-col>
+          <nz-switch [nzControl]="true" [ngModel]="values['Cloud'] === 'tencent'" (click)="useCloud('tencent')">
+          </nz-switch>
+        </nz-col>
+      </nz-row>
+
+      <nz-card nzSize="small" nzType="inner" nzTitle="Detail" [nzExtra]="tencentEditTpl">
+        <ng-template #tencentEditTpl>
+          <button nz-button nzType="text" (click)="setTencent()">
+            <span nz-icon nzType="edit"></span>
+          </button>
+        </ng-template>
+        <nz-descriptions nzLayout="vertical">
+          <nz-descriptions-item nzTitle="SecretId">
+            <ng-container *ngIf="values['TencentSecretId']; else unkown">
+              {{ values['TencentSecretId'] }}
+            </ng-container>
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="SecretKey">
+            <ng-container *ngIf="values['TencentSecretKey']; else unkown">
+              <span>Exists</span>
+            </ng-container>
+          </nz-descriptions-item>
+        </nz-descriptions>
+      </nz-card>
+
+      <nz-row style="padding-top: 12px" [nzGutter]="[8, 8]">
+        <nz-col [nzSpan]="12">
+          <nz-card nzSize="small" nzType="inner" nzTitle="Object Store" [nzExtra]="cosEditTpl">
+            <ng-template #cosEditTpl>
+              <button nz-button nzType="text" (click)="setCos()">
+                <span nz-icon nzType="edit"></span>
+              </button>
+            </ng-template>
+            <p>
+              Store static files in the COS object store, and then distribute the content back to the source through the
+              CDN
+            </p>
+            <nz-descriptions nzLayout="vertical" [nzColumn]="2">
+              <nz-descriptions-item nzTitle="Bucket Name">
+                <ng-container *ngIf="values['TencentCosBucket']; else unkown">
+                  {{ values['TencentCosBucket'] }}
+                </ng-container>
+              </nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Region">
+                <ng-container *ngIf="values['TencentCosRegion']; else unkown">
+                  {{ values['TencentCosRegion'] }}
+                </ng-container>
+              </nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Pre-signature Expired">
+                <ng-container *ngIf="values['TencentCosExpired']; else unkown">
+                  {{ values['TencentCosExpired'] }} sec
+                </ng-container>
+              </nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Upload Size">
+                <ng-container *ngIf="values['TencentCosLimit']; else unkown">
+                  {{ values['TencentCosLimit'] }} KB
+                </ng-container>
+              </nz-descriptions-item>
+            </nz-descriptions>
+          </nz-card>
+        </nz-col>
+        <nz-col [nzSpan]="12"> </nz-col>
+      </nz-row>
+    </nz-tab>
+    <nz-tab nzTitle="Aws">
+      <nz-row style="padding-bottom: 12px" nzJustify="space-between">
+        <nz-col>
+          <img
+            style="padding: 16px 8px"
+            [height]="80"
+            [width]="160"
+            [ngSrc]="['assets', 'AWS.png'] | wpxAssets"
+            alt=""
+          />
+        </nz-col>
+        <nz-col></nz-col>
+        <nz-col>
+          <nz-switch nzSize="default" nzDisabled></nz-switch>
+        </nz-col>
+      </nz-row>
+
+      <nz-card nzSize="small" nzType="inner" nzTitle="Detail" [nzExtra]="notYetTpl">
+        <nz-empty nzNotFoundContent=""></nz-empty>
+      </nz-card>
+
+      <nz-row style="padding-top: 12px" [nzGutter]="[8, 8]">
+        <nz-col [nzSpan]="12">
+          <nz-card nzSize="small" nzType="inner" nzTitle="Object Store" [nzExtra]="notYetTpl">
+            <p>
+              Store static files in the S3 object store, and then distribute the content back to the source through the
+              CDN
+            </p>
+            <nz-empty nzNotFoundContent=""></nz-empty>
+          </nz-card>
+        </nz-col>
+      </nz-row>
+    </nz-tab>
+  </nz-tabset>
+</nz-card>
+
+<ng-template #unkown>
+  <span>Unset</span>
+</ng-template>
+
+<ng-template #notYetTpl>
+  <button nz-button nzType="text" disabled>
+    <span nz-icon nzType="edit"></span>
+  </button>
+</ng-template>

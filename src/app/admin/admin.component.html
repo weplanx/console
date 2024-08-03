@@ -1,0 +1,81 @@
+<nz-layout style="height: 100%">
+  <nz-header class="nav">
+    <app-nav></app-nav>
+  </nz-header>
+  <nz-layout>
+    <nz-sider nzWidth="240px" nzTheme="light">
+      <ul nz-menu style="border: none">
+        <li nz-menu-item nzMatchRouter routerLink="projects">
+          <span nz-icon nzType="project" nzTheme="outline"></span>
+          <span>Projects</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="clusters">
+          <span nz-icon nzType="cluster" nzTheme="outline"></span>
+          <span>Clusters</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="endpoints">
+          <span nz-icon nzType="api" nzTheme="outline"></span>
+          <span>Endpoints</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="imessages">
+          <span nz-icon nzType="message" nzTheme="outline"></span>
+          <span>IMessages</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="acc-tasks">
+          <span nz-icon nzType="thunderbolt" nzTheme="outline"></span>
+          <span>AccTasks</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="datasets">
+          <span nz-icon nzType="database" nzTheme="outline"></span>
+          <span>Dataset</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="monitor">
+          <span nz-icon nzType="line-chart" nzTheme="outline"></span>
+          <span>Monitor</span>
+        </li>
+        <li nz-menu-divider></li>
+        <li nz-menu-item nzMatchRouter routerLink="users">
+          <span nz-icon nzType="team" nzTheme="outline"></span>
+          <span>Users</span>
+        </li>
+        <li nz-submenu nzTitle="Integrated" nzIcon="api">
+          <ul>
+            <li nz-menu-item nzMatchRouter routerLink="integrated/cloud">
+              <span nz-icon nzType="cloud" nzTheme="outline"></span>
+              <span>Public Cloud</span>
+            </li>
+            <li nz-menu-item nzMatchRouter routerLink="integrated/collaboration">
+              <span nz-icon nzType="coffee" nzTheme="outline"></span>
+              <span>Collaboration</span>
+            </li>
+            <li nz-menu-item nzMatchRouter routerLink="integrated/extend">
+              <span nz-icon nzType="tool" nzTheme="outline"></span>
+              <span>Extend</span>
+            </li>
+          </ul>
+        </li>
+        <li nz-submenu nzTitle="Setting" nzIcon="setting">
+          <ul>
+            <li nz-menu-item nzMatchRouter routerLink="settings/security">
+              <span nz-icon nzType="safety" nzTheme="outline"></span>
+              <span>Security</span>
+            </li>
+            <li nz-menu-item nzMatchRouter routerLink="settings/sessions">
+              <span nz-icon nzType="rocket" nzTheme="outline"></span>
+              <span>Sessions</span>
+            </li>
+            <li nz-menu-item nzMatchRouter routerLink="settings/values">
+              <span nz-icon nzType="field-binary" nzTheme="outline"></span>
+              <span>Dynamic Values</span>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nz-sider>
+    <nz-layout style="overflow: hidden auto">
+      <nz-content>
+        <router-outlet></router-outlet>
+      </nz-content>
+    </nz-layout>
+  </nz-layout>
+</nz-layout>

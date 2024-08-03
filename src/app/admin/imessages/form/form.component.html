@@ -1,0 +1,37 @@
+<form *ngIf="form" nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-form-item>
+    <nz-form-label nzRequired>Topic</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.topic">
+      <input nz-input formControlName="topic" placeholder="Please enter the topic" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired> Authorized </nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.projects">
+      <nz-select
+        formControlName="projects"
+        nzAllowClear
+        nzPlaceHolder="Please select the authorized projects"
+        nzMode="multiple"
+        nzShowSearch
+        nzServerSearch
+        (nzOnSearch)="projects$.next($event)"
+      >
+        <ng-container *ngFor="let item of projectItems">
+          <nz-option [nzValue]="item._id" [nzLabel]="item.name"> </nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>Description</nz-form-label>
+    <nz-form-control nzHasFeedback>
+      <textarea nz-input rows="4" formControlName="description" placeholder="Describe a topic function"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *nzModalFooter>
+  <button nz-button type="button" nzType="default" (click)="close()">Cancel</button>
+  <button nz-button nzType="primary" form="form" [disabled]="!form.valid">Submit</button>
+</div>

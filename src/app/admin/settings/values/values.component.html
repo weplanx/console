@@ -1,0 +1,65 @@
+<ng-template #titleRef>
+  <nz-space>
+    <nz-input-group *nzSpaceItem style="width: 320px" nzSuffixIcon="search">
+      <input [(ngModel)]="searchText" (keyup.enter)="getData()" type="text" nz-input placeholder="Key" />
+    </nz-input-group>
+    <nz-button-group *nzSpaceItem>
+      <button nz-button nzType="text" (click)="getData()">
+        <i nz-icon nzType="reload"></i>
+      </button>
+      <button nz-button nzType="text" (click)="clearSearch()">
+        <i nz-icon nzType="clear"></i>
+      </button>
+    </nz-button-group>
+  </nz-space>
+</ng-template>
+
+<ng-template #extraRef>
+  <nz-space>
+    <button *nzSpaceItem nz-button nzType="primary" (click)="form()"> Create </button>
+  </nz-space>
+</ng-template>
+
+<nz-card style="height: 100%" [nzTitle]="titleRef" [nzExtra]="extraRef">
+  <nz-table
+    #basicTable
+    [nzData]="items"
+    [nzLoading]="loading"
+    [nzFrontPagination]="false"
+    [nzShowPagination]="false"
+    [nzScroll]="{ y }"
+  >
+    <thead>
+      <tr>
+        <th nzWidth="320px"><b>Key</b></th>
+        <th><b>Value</b></th>
+        <th nzRight nzWidth="60px">
+          <button nz-button nzType="text" disabled>
+            <span nz-icon nzType="setting" nzTheme="outline"></span>
+          </button>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (data of basicTable.data; track data.key) {
+        <tr>
+          <td>{{ data.key }}</td>
+          <td nzBreakWord>
+            <code>{{ data.value }}</code>
+          </td>
+          <td nzRight>
+            <button nz-button nzType="text" nz-dropdown [nzDropdownMenu]="menu">
+              <span nz-icon nzType="ellipsis" nzTheme="outline"></span>
+            </button>
+            <nz-dropdown-menu #menu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item (click)="form(data)">Modify</li>
+                <li nz-menu-item nzDanger (click)="delete(data.key)">Delete</li>
+              </ul>
+            </nz-dropdown-menu>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </nz-table>
+</nz-card>

@@ -1,0 +1,65 @@
+<form *ngIf="form" nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-row [nzGutter]="24">
+    <nz-col [nzSpan]="14">
+      <nz-form-item>
+        <nz-form-label nzRequired>Email</nz-form-label>
+        <nz-form-control nzHasFeedback [nzAutoTips]="tips.email">
+          <input nz-input type="email" formControlName="email" placeholder="Please enter a email" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzRequired]="!data"> Password </nz-form-label>
+        <nz-form-control nzHasFeedback [nzAutoTips]="tips.password">
+          <nz-input-group [nzSuffix]="suffixTemplate">
+            <ng-template #suffixTemplate>
+              <span
+                nz-icon
+                [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
+                (click)="passwordVisible = !passwordVisible"
+              ></span>
+            </ng-template>
+            <input
+              [type]="passwordVisible ? 'text' : 'password'"
+              nz-input
+              autocomplete="new-password"
+              formControlName="password"
+              placeholder="Optional"
+            />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>Name</nz-form-label>
+        <nz-form-control>
+          <input nz-input formControlName="name" placeholder="Please enter a name" />
+        </nz-form-control>
+      </nz-form-item>
+    </nz-col>
+    <nz-col [nzSpan]="10">
+      <nz-form-item>
+        <nz-form-label>Avatar</nz-form-label>
+        <nz-form-control>
+          <wpx-upload-avatar
+            wpxExt="image"
+            [wpxAccept]="['image/jpeg', 'image/png']"
+            [wpxFallback]="['assets', 'photon.svg'] | wpxAssets"
+            formControlName="avatar"
+          >
+          </wpx-upload-avatar>
+        </nz-form-control>
+      </nz-form-item>
+    </nz-col>
+  </nz-row>
+
+  <nz-form-item>
+    <nz-form-label nzRequired>Status</nz-form-label>
+    <nz-form-control>
+      <nz-switch formControlName="status"></nz-switch>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *nzModalFooter>
+  <button nz-button type="button" nzType="default" (click)="close()">Cancel</button>
+  <button nz-button nzType="primary" form="form" [disabled]="!form.valid">Submit</button>
+</div>

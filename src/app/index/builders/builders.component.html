@@ -1,0 +1,91 @@
+<nz-layout style="height: 100%; background: #fff" class="inner-layout">
+  <nz-sider style="padding: 12px" nzWidth="420px" nzTheme="light">
+    <nz-space nzAlign="center">
+      <nz-input-group *nzSpaceItem [nzPrefix]="suffixIconSearch" style="width: 320px">
+        <input type="text" nz-input placeholder="Search" [(ngModel)]="searchText" />
+        <ng-template #suffixIconSearch>
+          <span nz-icon nzType="search"></span>
+        </ng-template>
+      </nz-input-group>
+
+      <nz-button-group *nzSpaceItem>
+        <button nz-button nzType="text" (click)="getData()">
+          <span nz-icon nzType="reload"></span>
+        </button>
+        <button nz-button nzType="text" (click)="openForm()">
+          <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
+        </button>
+      </nz-button-group>
+    </nz-space>
+    <nz-divider style="margin: 12px 0 6px"></nz-divider>
+    <nz-tree
+      nzBlockNode
+      nzDraggable
+      [(nzSelectedKeys)]="activedKey"
+      [nzData]="nodes"
+      [nzShowExpand]="false"
+      [nzTreeTemplate]="Tpl"
+      [nzSearchValue]="searchText"
+      [nzBeforeDrop]="beforeDrop"
+      (nzClick)="selectedNode($event)"
+      (nzContextMenu)="openContextMenu($event, menu)"
+      (nzOnDrop)="reorganization($event)"
+    >
+    </nz-tree>
+  </nz-sider>
+  <nz-content>
+    <router-outlet></router-outlet>
+  </nz-content>
+</nz-layout>
+
+<ng-template #Tpl let-node>
+  <nz-row class="custom-node" nzAlign="middle" nzJustify="space-between">
+    <nz-col>
+      @if (!node.isLeaf) {
+        <span nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" (click)="openFolder(node)"></span>
+      } @else {
+        <span nz-icon nzType="file"></span>
+      }
+      <span class="folder-name">{{ node.title }}</span>
+    </nz-col>
+    <nz-col></nz-col>
+    <nz-col>
+      @if (builders.dict[node.key]; as data) {
+        @if (!data.status) {
+          <nz-tag nzColor="error">Off</nz-tag>
+        }
+
+        <nz-tag nzColor="blue">
+          @if (data.icon) {
+            <span nz-icon [nzType]="data.icon" nzTheme="outline"></span>
+          }
+          @switch (data.kind) {
+            @case ('nav') {
+              Nav
+            }
+            @case ('collection') {
+              Collection
+            }
+            @case ('single') {
+              Single
+            }
+            @case ('manual') {
+              Manual
+            }
+          }
+        </nz-tag>
+      }
+    </nz-col>
+  </nz-row>
+</ng-template>
+
+<nz-dropdown-menu #menu="nzDropdownMenu">
+  @if (actived) {
+    <ul nz-menu>
+      <li nz-menu-item>{{ actived.title }}</li>
+      <li nz-menu-divider></li>
+      <li nz-menu-item (click)="openForm(builders.dict[actived.key])">Modify</li>
+      <li nz-menu-item (click)="delete(builders.dict[actived.key])">Delete</li>
+    </ul>
+  }
+</nz-dropdown-menu>

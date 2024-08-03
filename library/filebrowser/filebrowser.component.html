@@ -1,0 +1,149 @@
+<ng-template #titleRef>
+  <nz-space>
+    <wpx-categories
+      *nzSpaceItem
+      [wpxType]="wpxType"
+      [(ngModel)]="ds.categories"
+      (ngModelChange)="ds.fetch(true)"
+    ></wpx-categories>
+    <nz-input-group *nzSpaceItem style="width: 220px" nzSuffixIcon="search">
+      <input nz-input placeholder="Name" [(ngModel)]="ds.searchText" (keyup.enter)="ds.fetch(true)" />
+    </nz-input-group>
+    <button *nzSpaceItem nz-button nzType="text" (click)="ds.fetch(true)">
+      <i nz-icon nzType="reload" nzTheme="outline"></i>
+    </button>
+  </nz-space>
+</ng-template>
+
+<ng-template #extraRef>
+  <nz-space>
+    @if (ds.selection.size; as size) {
+      <button *nzSpaceItem nz-button nzType="dashed" nz-dropdown [nzDropdownMenu]="menu">
+        {{ size }} items selected
+      </button>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu>
+          <li nz-menu-item (click)="ds.selection.clear()"> Unselect </li>
+          <li nz-menu-item (click)="bulkCategories()"> Category to </li>
+          <li nz-menu-item nzDanger (click)="bulkDelete()"> Delete </li>
+        </ul>
+      </nz-dropdown-menu>
+    }
+    <wpx-upload-transport
+      *nzSpaceItem
+      [wpxExt]="ext"
+      [wpxAccept]="accept"
+      (wpxChange)="upload($event)"
+    ></wpx-upload-transport>
+  </nz-space>
+</ng-template>
+
+<nz-card
+  [nzBodyStyle]="{
+    height: 'calc(100% - 64px)',
+    padding: 0
+  }"
+  [ngClass]="{ modal: !!modalRef }"
+  [nzTitle]="wpxTitle ?? titleRef"
+  [nzExtra]="wpxExtra ?? extraRef"
+>
+  <cdk-virtual-scroll-viewport style="height: 100%" [itemSize]="200" [minBufferPx]="800" [maxBufferPx]="1000">
+    <nz-list style="padding: 12px 12px 0 24px" nzGrid [nzSplit]="false" [nzLoading]="ds.loading">
+      @if (ds.total === 0) {
+        <nz-list-empty></nz-list-empty>
+      }
+      <nz-list-item *cdkVirtualFor="let items of ds" style="height: 200px">
+        <nz-row [nzGutter]="12" style="width: 100%">
+          @for (item of items; track item._id) {
+            <nz-col [nzSpan]="24 / ds.n">
+              <nz-card
+                nzHoverable
+                nzSize="small"
+                nzType="inner"
+                [nzCover]="coverRef"
+                (contextmenu)="openActions($event, actions, item)"
+              >
+                <ng-template #coverRef>
+                  @switch (wpxType) {
+                    @case ('picture') {
+                      <div class="photo" (click)="previewPicture(item)">
+                        <img
+                          wpxRetry
+                          nz-image
+                          nzDisablePreview
+                          [nzSrc]="
+                            [item.url]
+                              | wpxAssets
+                                : (item.query
+                                    ? item.query + option.style.processed.thumbnail
+                                    : option.style.default.thumbnail)
+                          "
+                          [nzPlaceholder]="
+                            [item.url]
+                              | wpxAssets
+                                : (item.query
+                                    ? item.query + option.style.processed.placeholder
+                                    : option.style.default.placeholder)
+                          "
+                          [nzFallback]="wpxFallback"
+                          [alt]="item.name"
+                        />
+                      </div>
+                    }
+                    @case ('video') {
+                      <div class="photo" (click)="previewPoster(item)">
+                        <img
+                          wpxRetry
+                          nz-image
+                          nzDisablePreview
+                          [nzSrc]="[item.url + '_chart'] | wpxAssets: option.style.default.thumbnail"
+                          [nzFallback]="wpxFallback"
+                          [alt]="item.name"
+                        />
+                      </div>
+                    }
+                  }
+                </ng-template>
+                <nz-card-meta style="height: 50px" [nzDescription]="descriptionRef">
+                  <ng-template #descriptionRef>
+                    <label
+                      [nzDisabled]="item.deleted"
+                      nz-checkbox
+                      [nzChecked]="ds.selection.has(item._id)"
+                      (nzCheckedChange)="$event ? ds.setSelection(item) : ds.removeSelection(item._id)"
+                    >
+                      @if (item.deleted) {
+                        <p nz-typography nzType="secondary">Element no longer exists</p>
+                      } @else {
+                        <p nz-typography nzEllipsis [nzEllipsisRows]="2" [nzContent]="item.name"></p>
+                      }
+                    </label>
+                  </ng-template>
+                </nz-card-meta>
+              </nz-card>
+            </nz-col>
+          }
+        </nz-row>
+      </nz-list-item>
+    </nz-list>
+  </cdk-virtual-scroll-viewport>
+</nz-card>
+
+<nz-dropdown-menu #actions="nzDropdownMenu">
+  @if (actived; as data) {
+    <ul nz-menu style="width: 320px">
+      <li nz-menu-item nzDisabled>{{ data.name }}</li>
+      <li nz-menu-divider></li>
+      @switch (wpxType) {
+        @case ('picture') {
+          <li nz-menu-item (click)="openPicture(data)"> Process </li>
+        }
+        @case ('video') {
+          <li nz-menu-item (click)="openVideo(data)"> Play </li>
+        }
+      }
+      <li nz-menu-item (click)="openForm(data)"> Modify </li>
+      <li nz-menu-item nzDanger (click)="delete(data)"> Delete </li>
+    </ul>
+  }
+</nz-dropdown-menu>

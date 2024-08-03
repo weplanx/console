@@ -1,0 +1,19 @@
+<wpx-richtext
+  [wpxPlaceholder]="placeholder"
+  [wpxFallback]="['assets', 'photon.svg'] | wpxAssets"
+  [wpxPictures]="openPictures"
+  [wpxVideos]="openVideos"
+  [(ngModel)]="value"
+  (ngModelChange)="onChanged($event)"
+></wpx-richtext>
+
+<ng-template #footerRef let-ref="modalRef">
+  <button nz-button (click)="ref.triggerCancel()">Cancel</button>
+  @if (instance.ds.selection.size; as size) {
+    @if (size > 1) {
+      <button nz-button disabled> Maximum limit exceeded </button>
+    } @else {
+      <button nz-button nzType="primary" (click)="ref.triggerOk()"> Import </button>
+    }
+  }
+</ng-template>

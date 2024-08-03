@@ -1,0 +1,114 @@
+<ng-template #titleRef>
+  <nz-space>
+    <nz-input-group *nzSpaceItem style="width: 320px" nzSuffixIcon="search">
+      <input
+        type="text"
+        nz-input
+        placeholder="Collection Name"
+        [(ngModel)]="items.searchText"
+        (keyup.enter)="getData()"
+      />
+    </nz-input-group>
+    <nz-button-group *nzSpaceItem>
+      <button nz-button nzType="text" (click)="clearSearch()">
+        <i nz-icon nzType="clear"></i>
+      </button>
+      <button nz-button nzType="text" (click)="getData()">
+        <i nz-icon nzType="reload"></i>
+      </button>
+    </nz-button-group>
+  </nz-space>
+</ng-template>
+
+<ng-template #extraRef>
+  <button nz-button nzType="primary" (click)="openForm()"> Create </button>
+</ng-template>
+
+<nz-card style="height: 100%" [nzTitle]="titleRef" [nzExtra]="extraRef">
+  <nz-table
+    #basicTable
+    [nzData]="items.data"
+    [nzLoading]="items.loading"
+    [nzFrontPagination]="false"
+    [nzShowPagination]="false"
+    [nzScroll]="scroll"
+  >
+    <thead>
+      <tr>
+        <th nzWidth="420px"><b>Collection Name</b></th>
+        <th><b>Detail</b></th>
+        <th nzWidth="120px"><b>Event</b></th>
+        <th nzWidth="120px"><b>Permission </b></th>
+        <th nzRight nzWidth="60px">
+          <button nz-button nzType="text" disabled>
+            <span nz-icon nzType="setting" nzTheme="outline"></span>
+          </button>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (data of basicTable.data; track data.name) {
+        <tr>
+          <td>
+            <nz-tag nzColor="blue" [ngSwitch]="data.type">
+              @switch (data.type) {
+                @case ('collection') {
+                  Standard
+                }
+                @case ('timeseries') {
+                  Timeseries
+                }
+              }
+            </nz-tag>
+            {{ data.name }}
+          </td>
+
+          <td>
+            @if (data.keys && data.keys.length !== 0) {
+              <nz-tag [nz-tooltip]="data.keys | wpxJoin: ','"> Projection </nz-tag>
+            }
+            @if (data.sensitives && data.sensitives.length !== 0) {
+              <nz-tag [nz-tooltip]="data.sensitives | wpxJoin: ','"> Opaque </nz-tag>
+            }
+            @switch (data.type) {
+              @case ('collection') {
+                @if (data.options.validator) {
+                  <nz-tag>Validation</nz-tag>
+                }
+              }
+              @case ('timeseries') {
+                <nz-tag>
+                  Expire:
+                  @if (data.options.expireAfterSeconds) {
+                    {{ data.options.expireAfterSeconds / 86400 }} days
+                  } @else {
+                    permanent
+                  }
+                </nz-tag>
+                <nz-tag> TimeField: {{ data.options.timeseries.timeField }} </nz-tag>
+                <nz-tag> MetaField: {{ data.options.timeseries.metaField }} </nz-tag>
+              }
+            }
+          </td>
+          <td>
+            <nz-switch nzControl [ngModel]="data.event" (click)="update(data.name, 'Event')"></nz-switch>
+          </td>
+          <td>
+            <nz-switch nzControl [(ngModel)]="data.status" (click)="update(data.name, 'Status')"></nz-switch>
+          </td>
+          <td nzRight>
+            <button nz-button nzType="text" nz-dropdown [nzDropdownMenu]="menu">
+              <span nz-icon nzType="ellipsis" nzTheme="outline"></span>
+            </button>
+            <nz-dropdown-menu #menu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item (click)="openControl(data.name)"> Control </li>
+                <li nz-menu-item nzDanger (click)="delete(data)"> Delete </li>
+              </ul>
+            </nz-dropdown-menu>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </nz-table>
+</nz-card>

@@ -1,0 +1,122 @@
+<ng-template #titleRef>
+  <nz-space nzAlign="center">
+    <wpx-keyword
+      *nzSpaceItem
+      [wpxModel]="model"
+      [wpxKeys]="['email', 'name']"
+      (wpxSubmit)="getData()"
+      wpxPlaceholder="Email, Name"
+    ></wpx-keyword>
+    <wpx-toolbox *nzSpaceItem [wpxModel]="model" [wpxSearchForm]="form" (wpxClear)="clear()" (wpxRefresh)="getData()">
+      <form *ngIf="form" nz-form id="search" [formGroup]="form" (wpxSubmit)="search($event)">
+        <nz-row [nzGutter]="[16, 16]">
+          <nz-col [nzSpan]="6">
+            <nz-form-item>
+              <nz-form-label>Email</nz-form-label>
+              <nz-form-control>
+                <input nz-input formControlName="email" />
+              </nz-form-control>
+            </nz-form-item>
+          </nz-col>
+          <nz-col [nzSpan]="6">
+            <nz-form-item>
+              <nz-form-label>Name</nz-form-label>
+              <nz-form-control>
+                <input nz-input formControlName="name" />
+              </nz-form-control>
+            </nz-form-item>
+          </nz-col>
+        </nz-row>
+      </form>
+    </wpx-toolbox>
+  </nz-space>
+</ng-template>
+
+<ng-template #extraRef>
+  <nz-space nzAlign="center">
+    <ng-container *ngIf="model.selection.size as size">
+      <button *nzSpaceItem nz-button nzType="dashed" nz-dropdown [nzDropdownMenu]="menu">
+        {{ size }} selected items
+      </button>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu>
+          <li nz-menu-item (click)="wpxTable.clearSelections()"> Unselect </li>
+          <li nz-menu-item nzDanger (click)="bulkDelete()"> Delete </li>
+        </ul>
+      </nz-dropdown-menu>
+    </ng-container>
+    <button *nzSpaceItem nz-button nzType="primary" (click)="open()"> Create </button>
+  </nz-space>
+</ng-template>
+
+<wpx-table
+  #wpxTable
+  [wpxTitle]="titleRef"
+  [wpxExtra]="extraRef"
+  [wpxModel]="model"
+  [wpxColumns]="[
+    {
+      title: 'Email',
+      key: 'username',
+      width: '320px',
+      render: username
+    },
+    {
+      title: 'Name',
+      key: 'name',
+      width: '160px'
+    },
+    {
+      title: 'Status',
+      key: 'status',
+      width: '120px',
+      format: 'status'
+    },
+    {
+      title: 'History',
+      key: 'history',
+      width: '240px',
+      render: history
+    },
+    {
+      title: 'Join Date',
+      key: 'create_time',
+      width: '240px',
+      format: 'date'
+    }
+  ]"
+  [wpxAction]="action"
+  (wpxChange)="getData()"
+>
+  <ng-template #username let-data>
+    <nz-space>
+      <span *nzSpaceItem>{{ data.email }}</span>
+      <ng-container *ngIf="data.lark && data.lark === '*'">
+        <span *nzSpaceItem nz-icon nzType="idcard" nzTheme="twotone" nz-tooltip="Linked to Lark"></span>
+      </ng-container>
+      <ng-container *ngIf="data.phone && data.phone === '*'">
+        <span *nzSpaceItem nz-icon nzType="phone" nzTheme="twotone" nz-tooltip="Linked to phone number"></span>
+      </ng-container>
+      <ng-container *ngIf="data.totp && data.totp === '*'">
+        <span *nzSpaceItem nz-icon nzType="safety-certificate" nzTheme="twotone" nz-tooltip="Linked to totp"></span>
+      </ng-container>
+    </nz-space>
+  </ng-template>
+  <ng-template #history let-data>
+    <ng-container *ngIf="data.history">
+      {{ data.history?.timestamp | date: 'medium' }} （{{ data.sessions }}）
+    </ng-container>
+  </ng-template>
+</wpx-table>
+
+<ng-template #action let-data>
+  <button nz-button nzType="text" nz-dropdown [nzDropdownMenu]="menu">
+    <span nz-icon nzType="ellipsis" nzTheme="outline"></span>
+  </button>
+  <nz-dropdown-menu #menu="nzDropdownMenu">
+    <ul nz-menu>
+      <li nz-menu-item (click)="open(data)"> Modify </li>
+      <li nz-menu-item nzDanger (click)="delete(data)"> Delete </li>
+    </ul>
+  </nz-dropdown-menu>
+</ng-template>

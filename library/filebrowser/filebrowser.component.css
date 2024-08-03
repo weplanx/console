@@ -1,0 +1,17 @@
+nz-card {
+  height: 100%;
+}
+
+.photo {
+  height: 120px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.photo img {
+  max-width: 120%;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

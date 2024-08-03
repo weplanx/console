@@ -1,0 +1,58 @@
+<form nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-form-item>
+    <nz-form-label nzRequired>Cluster Name</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.name">
+      <input nz-input formControlName="name" placeholder="Please enter the cluster name" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>Kind</nz-form-label>
+    <nz-form-control>
+      <nz-radio-group formControlName="kind">
+        <label nz-radio-button nzValue="kubernetes">Kubernetes</label>
+        <label nz-radio-button nzValue="agent" nzDisabled>Agent</label>
+      </nz-radio-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  @if (!edit) {
+    <ng-container formGroupName="config">
+      <nz-form-item>
+        <nz-form-label nzRequired> Host </nz-form-label>
+        <nz-form-control nzHasFeedback>
+          <input nz-input formControlName="host" placeholder="kubeconfig <cluster.server>" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired> Certificate Authority </nz-form-label>
+        <nz-form-control nzHasFeedback>
+          <input nz-input formControlName="ca_data" placeholder="kubeconfig <cluster.certificate-authority-data>" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired> Client Certificate </nz-form-label>
+        <nz-form-control nzHasFeedback>
+          <input nz-input formControlName="cert_data" placeholder="kubeconfig <user.client-certificate-data>" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired> Client Key </nz-form-label>
+        <nz-form-control nzHasFeedback>
+          <input nz-input formControlName="key_data" placeholder="kubeconfig <user.client-key-data>" />
+        </nz-form-control>
+      </nz-form-item>
+    </ng-container>
+  }
+
+  <nz-form-item>
+    <nz-form-label nzRequired> Admin Cluster </nz-form-label>
+    <nz-form-control>
+      <nz-switch formControlName="admin"></nz-switch>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *nzModalFooter>
+  <button nz-button type="button" nzType="default" (click)="close()">Cancel</button>
+  <button nz-button nzType="primary" form="form" [disabled]="!form.valid">Submit</button>
+</div>

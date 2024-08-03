@@ -1,0 +1,253 @@
+<nz-page-header nzTitle="Profile">
+  <nz-page-header-footer>
+    <nz-tabset nzSize="large" [(nzSelectedIndex)]="index">
+      <nz-tab nzTitle="Basic"></nz-tab>
+      <nz-tab nzTitle="Security"></nz-tab>
+      <nz-tab nzTitle="Collaboration"></nz-tab>
+      <nz-tab nzTitle="History"></nz-tab>
+    </nz-tabset>
+  </nz-page-header-footer>
+</nz-page-header>
+
+@if (app.user(); as u) {
+  <nz-card>
+    <nz-list nzSize="small" [ngSwitch]="index" nzItemLayout="vertical">
+      @switch (index) {
+        @case (0) {
+          <nz-list-item>
+            <nz-list-item-meta>
+              <nz-list-item-meta-title><b>Email</b></nz-list-item-meta-title>
+              <nz-list-item-meta-description> Set To: {{ u.email }}</nz-list-item-meta-description>
+            </nz-list-item-meta>
+            <nz-list-item-extra>
+              <button nz-button nzType="primary" nzShape="circle" nz-tooltip="Modify" (click)="setEmail()">
+                <i nz-icon nzType="edit"></i>
+              </button>
+            </nz-list-item-extra>
+          </nz-list-item>
+          <nz-list-item>
+            <nz-list-item-meta>
+              <nz-list-item-meta-title><b>Name</b></nz-list-item-meta-title>
+              <nz-list-item-meta-description>
+                @if (!!u.name) {
+                  Set to: {{ u.name }}
+                } @else {
+                  <span>It is recommended to use a job title or real name</span>
+                }
+              </nz-list-item-meta-description>
+            </nz-list-item-meta>
+            <nz-list-item-extra>
+              <button nz-button nzType="primary" nzShape="circle" nz-tooltip="Modify" (click)="setName()">
+                <i nz-icon nzType="edit"></i>
+              </button>
+            </nz-list-item-extra>
+          </nz-list-item>
+          <nz-list-item>
+            <nz-list-item-meta>
+              <nz-list-item-meta-title><b>Avatar</b></nz-list-item-meta-title>
+              <nz-list-item-meta-description>
+                It is recommended to use 256*256 sizes for the avatar.
+              </nz-list-item-meta-description>
+            </nz-list-item-meta>
+            @if (!!u.avatar) {
+              <nz-avatar nzShape="square" [nzSize]="96" [nzSrc]="[u.avatar] | wpxAssets"></nz-avatar>
+            } @else {
+              <nz-avatar nzShape="square" [nzSize]="96" nzIcon="user"></nz-avatar>
+            }
+            <nz-list-item-extra>
+              <button nz-button nzType="primary" nzShape="circle" nz-tooltip="Modify" (click)="setAvatar()">
+                <i nz-icon nzType="edit"></i>
+              </button>
+            </nz-list-item-extra>
+          </nz-list-item>
+        }
+        @case (1) {
+          <nz-list-item>
+            <nz-list-item-meta>
+              <nz-list-item-meta-title><b>Password</b></nz-list-item-meta-title>
+              <nz-list-item-meta-description>
+                It is best to use a combination of uppercase letters, lowercase letters, numbers and special characters
+                （&#64;$!%*?&-+）
+              </nz-list-item-meta-description>
+            </nz-list-item-meta>
+            <nz-list-item-extra>
+              <button nz-button nzType="primary" nzShape="circle" (click)="setPassword()">
+                <i nz-icon nzType="edit"></i>
+              </button>
+            </nz-list-item-extra>
+          </nz-list-item>
+          <nz-list-item>
+            <nz-list-item-meta>
+              <nz-list-item-meta-title><b>Phone Number</b></nz-list-item-meta-title>
+              <nz-list-item-meta-description>
+                @if (!!u.phone) {
+                  Exists
+                } @else {
+                  <span>
+                    There is no mobile phone number set, which can be used for security-related operations such as
+                    mobile phone verification and login or account recovery.
+                  </span>
+                }
+              </nz-list-item-meta-description>
+            </nz-list-item-meta>
+            <nz-list-item-extra>
+              <nz-space>
+                @if (!!u.phone) {
+                  <button
+                    *nzSpaceItem
+                    nz-button
+                    nzDanger
+                    nzShape="circle"
+                    nz-popconfirm
+                    nzPopconfirmTitle="Are you sure you want to cancel?"
+                    nzPopconfirmPlacement="bottom"
+                    (nzOnConfirm)="unsetPhone()"
+                  >
+                    <i nz-icon nzType="close"></i>
+                  </button>
+                } @else {
+                  <button *nzSpaceItem nz-button nzType="primary" nzShape="circle" (click)="setPhone()">
+                    <i nz-icon nzType="edit"></i>
+                  </button>
+                }
+              </nz-space>
+            </nz-list-item-extra>
+          </nz-list-item>
+          <nz-list-item>
+            <nz-list-item-meta>
+              <nz-list-item-meta-title><b>Authenticator</b></nz-list-item-meta-title>
+              <nz-list-item-meta-description>
+                @if (!!u.totp) {
+                  <span>Exists</span>
+                } @else {
+                  <span>
+                    No authenticator app set up, code when prompted to use the app on your phone for two-factor
+                    authentication
+                  </span>
+                }
+              </nz-list-item-meta-description>
+            </nz-list-item-meta>
+            <nz-list-item-extra>
+              <nz-space>
+                @if (!!u.totp) {
+                  <button
+                    *nzSpaceItem
+                    nz-button
+                    nzDanger
+                    nzShape="circle"
+                    nz-popconfirm
+                    nzPopconfirmTitle="Are you sure you want to cancel?"
+                    nzPopconfirmPlacement="bottom"
+                    (nzOnConfirm)="unsetTotp()"
+                  >
+                    <i nz-icon nzType="close"></i>
+                  </button>
+                } @else {
+                  <button *nzSpaceItem nz-button nzType="primary" nzShape="circle" (click)="setTotp()">
+                    <i nz-icon nzType="edit"></i>
+                  </button>
+                }
+              </nz-space>
+            </nz-list-item-extra>
+          </nz-list-item>
+        }
+        @case (2) {
+          <nz-list-item>
+            <nz-list-item-meta>
+              <nz-list-item-meta-avatar>
+                <nz-avatar nzShape="square" nzSize="large" [nzSrc]="['assets', 'Lark.png'] | wpxAssets"></nz-avatar>
+              </nz-list-item-meta-avatar>
+              <nz-list-item-meta-title><b>Lark</b></nz-list-item-meta-title>
+              @if (!u.lark) {
+                <nz-list-item-meta-description> Lark account not linked</nz-list-item-meta-description>
+              }
+            </nz-list-item-meta>
+            @if (u.lark; as lark) {
+              <nz-descriptions nzLayout="vertical" [nzColumn]="2">
+                <nz-descriptions-item nzTitle="Name">{{ lark.name }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="English Name">
+                  {{ lark.en_name | nzSafeNull: '-' }}
+                </nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Identifier" [nzSpan]="2">
+                  {{ lark.open_id }}
+                </nz-descriptions-item>
+              </nz-descriptions>
+            }
+
+            <nz-list-item-extra>
+              @if (u.lark) {
+                <button
+                  nz-button
+                  nzDanger
+                  nzShape="circle"
+                  nz-popconfirm
+                  nzPopconfirmTitle="Are you sure you want to cancel the association?"
+                  nzPopconfirmPlacement="bottom"
+                  (nzOnConfirm)="unlinkLark()"
+                >
+                  <i nz-icon nzType="close"></i>
+                </button>
+              } @else {
+                <button nz-button nzType="link" (click)="linkLark()">Modify</button>
+              }
+            </nz-list-item-extra>
+          </nz-list-item>
+        }
+        @case (3) {
+          <nz-list-item>
+            <nz-list-item-meta>
+              <nz-list-item-meta-title><b>Detail</b></nz-list-item-meta-title>
+              <nz-list-item-meta-description>
+                @if (u.history; as history) {
+                  <nz-descriptions nzLayout="vertical" [nzColumn]="2">
+                    <nz-descriptions-item nzTitle="Total Number Of Sessions">
+                      <span>
+                        It has been logged in <i> {{ u.sessions }} </i> times
+                      </span>
+                    </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Last Login Time">
+                      {{ history.timestamp | date: 'medium' }}
+                    </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="IP">
+                      <span> {{ history.metadata.client_ip }}</span>
+                    </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="ISP">
+                      @if (u.history!.detail; as detail) {
+                        <nz-space [nzSplit]="spaceSplit">
+                          <span *nzSpaceItem>{{ detail.isp }}</span>
+                          <span *nzSpaceItem>{{ detail.timezone }}</span>
+                        </nz-space>
+                      }
+                    </nz-descriptions-item>
+
+                    @switch (u.history!.metadata.version) {
+                      @case ('shuliancloud.v4') {
+                        <nz-descriptions-item nzTitle="Geographic Information" [nzSpan]="2">
+                          @if (u.history!.detail; as detail) {
+                            <nz-space [nzSplit]="spaceSplit">
+                              <span *nzSpaceItem>
+                                {{ detail.country | wpxBlank: 'unknown' }}[{{ detail.continent }}]
+                              </span>
+                              <span *nzSpaceItem>{{ detail.prov | wpxBlank: 'unknown' }}</span>
+                              <span *nzSpaceItem>
+                                {{ detail.city | wpxBlank: 'unknown' }}[{{ detail.lng }},{{ detail.lat }}]
+                              </span>
+                            </nz-space>
+                          }
+                        </nz-descriptions-item>
+                      }
+                    }
+                  </nz-descriptions>
+                }
+              </nz-list-item-meta-description>
+            </nz-list-item-meta>
+          </nz-list-item>
+        }
+      }
+    </nz-list>
+  </nz-card>
+}
+
+<ng-template #spaceSplit>
+  <nz-divider nzType="vertical"></nz-divider>
+</ng-template>

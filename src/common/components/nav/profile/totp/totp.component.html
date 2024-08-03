@@ -1,0 +1,33 @@
+<form nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-form-item>
+    <nz-form-control nzExtra="Use TOTP tools to bind accounts, such as Authoriticator.">
+      <nz-qrcode [nzStatus]="status" [nzValue]="totp" (nzRefresh)="getTotp()"></nz-qrcode>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>Code</nz-form-label>
+    <nz-form-control>
+      <nz-input-group nzCompact>
+        <input
+          style="width: 50%"
+          type="text"
+          nz-input
+          formControlName="ts1"
+          placeholder="Please enter the verification code"
+        />
+        <input
+          style="width: 50%"
+          type="text"
+          nz-input
+          formControlName="ts2"
+          placeholder="Please enter the follow-up verification code"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *nzModalFooter>
+  <button nz-button type="button" nzType="default" (click)="close()">Cancel</button>
+  <button nz-button nzType="primary" form="form" [disabled]="!form.valid">Submit</button>
+</div>

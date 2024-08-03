@@ -1,0 +1,117 @@
+<nz-layout style="height: 100%; background: transparent">
+  <nz-page-header>
+    <nz-page-header-title>{{ name }}</nz-page-header-title>
+    <nz-page-header-extra>
+      <button nz-button nzType="primary" form="form" nzShape="circle" [disabled]="!form.valid">
+        <span nz-icon nzType="check" nzTheme="outline"></span>
+      </button>
+    </nz-page-header-extra>
+    <nz-page-header-footer>
+      <nz-tabset nzSize="small" [(nzSelectedIndex)]="index">
+        <nz-tab nzTitle="Projection"></nz-tab>
+        <nz-tab nzTitle="Opaque"></nz-tab>
+      </nz-tabset>
+    </nz-page-header-footer>
+  </nz-page-header>
+
+  <nz-content style="overflow: hidden auto">
+    <form nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+      @switch (index) {
+        @case (0) {
+          <nz-card>
+            <nz-table formArrayName="Keys" nzSize="middle" nzTemplateMode>
+              <thead>
+                <tr>
+                  <th nzWidth="60px">
+                    <button nz-button type="button" nzType="text" disabled>
+                      <span nz-icon nzType="holder" nzTheme="outline"></span>
+                    </button>
+                  </th>
+                  <th><b>Field Name</b></th>
+                  <th nzWidth="60px" nzAlign="center">
+                    <button nz-button type="button" nzType="text" (click)="keys.clear()">
+                      <span nz-icon nzType="rest" nzTheme="outline"></span>
+                    </button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody cdkDropList (cdkDropListDropped)="sort($event, keys)">
+                <tr *ngFor="let x of keys.controls; index as i" cdkDrag>
+                  <td nzAlign="center">
+                    <button nz-button type="button" nzType="text" cdkDragHandle>
+                      <span nz-icon nzType="holder" nzTheme="outline"></span>
+                    </button>
+                  </td>
+                  <td>
+                    <input
+                      style="width: 100%"
+                      nzBorderless
+                      nz-input
+                      [formControlName]="i"
+                      placeholder="Please enter a field name"
+                    />
+                  </td>
+                  <td nzAlign="center">
+                    <button nz-button type="button" nzType="text" (click)="removeKey(i)">
+                      <i nz-icon nzType="minus-circle"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </nz-table>
+            <button nzBlock type="button" nzType="text" nzSize="large" nz-button (click)="appendKey()">
+              <i nz-icon nzType="plus-circle"></i> Create
+            </button>
+          </nz-card>
+        }
+        @case (1) {
+          <nz-card>
+            <nz-table formArrayName="Sensitives" nzSize="middle" nzTemplateMode>
+              <thead>
+                <tr>
+                  <th nzWidth="60px">
+                    <button nz-button type="button" nzType="text" disabled>
+                      <span nz-icon nzType="holder" nzTheme="outline"></span>
+                    </button>
+                  </th>
+                  <th><b>Field Name</b></th>
+                  <th nzWidth="60px" nzAlign="center">
+                    <button nz-button type="button" nzType="text" (click)="sensitives.clear()">
+                      <span nz-icon nzType="rest" nzTheme="outline"></span>
+                    </button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody cdkDropList (cdkDropListDropped)="sort($event, sensitives)">
+                <tr *ngFor="let x of sensitives.controls; index as i" cdkDrag>
+                  <td nzAlign="center">
+                    <button nz-button type="button" nzType="text" cdkDragHandle>
+                      <span nz-icon nzType="holder" nzTheme="outline"></span>
+                    </button>
+                  </td>
+                  <td>
+                    <input
+                      style="width: 100%"
+                      nzBorderless
+                      nz-input
+                      [formControlName]="i"
+                      placeholder="Please enter a field name"
+                    />
+                  </td>
+                  <td nzAlign="center">
+                    <button nz-button type="button" nzType="text" (click)="removeSensitive(i)">
+                      <i nz-icon nzType="minus-circle"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </nz-table>
+            <button nzBlock type="button" nzType="text" nzSize="large" nz-button (click)="appendSensitive()">
+              <i nz-icon nzType="plus-circle"></i> Create
+            </button>
+          </nz-card>
+        }
+      }
+    </form>
+  </nz-content>
+</nz-layout>

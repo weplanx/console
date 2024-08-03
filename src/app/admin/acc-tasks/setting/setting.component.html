@@ -1,0 +1,19 @@
+<form nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-form-item>
+    <nz-form-label nzRequired>Accelerate Address</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.AccelerateAddress">
+      <input nz-input formControlName="AccelerateAddress" placeholder="Please enter the accelerate address" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>CAM UIN</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.CamUin">
+      <input nz-input formControlName="CamUin" placeholder="Please enter the Tencent Cam Uin" />
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *nzModalFooter>
+  <button nz-button type="button" nzType="default" (click)="close()">Cancel</button>
+  <button nz-button nzType="primary" form="form" [disabled]="!form.valid">Submit</button>
+</div>

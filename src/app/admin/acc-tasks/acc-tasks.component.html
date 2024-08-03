@@ -1,0 +1,82 @@
+<ng-template #titleRef>
+  <nz-space nzAlign="center">
+    <wpx-keyword
+      *nzSpaceItem
+      [wpxWidth]="320"
+      [wpxModel]="model"
+      [wpxKeys]="['target']"
+      (wpxSubmit)="getData()"
+      wpxPlaceholder="Target URL"
+    ></wpx-keyword>
+    <wpx-toolbox *nzSpaceItem [wpxModel]="model" (wpxClear)="getData()" (wpxRefresh)="getData()"> </wpx-toolbox>
+  </nz-space>
+</ng-template>
+
+<ng-template #extraRef>
+  <nz-space nzAlign="center">
+    @if (model.selection.size; as size) {
+      <button *nzSpaceItem nz-button nzType="dashed" nz-dropdown [nzDropdownMenu]="menu">
+        {{ size }} selected items
+      </button>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu>
+          <li nz-menu-item (click)="wpxTable.clearSelections()"> Unselect </li>
+          <li nz-menu-item nzDanger (click)="bulkDelete()"> Delete </li>
+        </ul>
+      </nz-dropdown-menu>
+    }
+    <button
+      *nzSpaceItem
+      nz-button
+      nz-popconfirm
+      nzPopconfirmTitle="Are you sure you want to start syncing?"
+      (nzOnConfirm)="sync()"
+      [nzLoading]="syncing"
+    >
+      Sync
+    </button>
+    <button *nzSpaceItem nz-button (click)="openSetting()"> Setting </button>
+    <button *nzSpaceItem nz-button nzType="primary" (click)="openForm()"> Create </button>
+  </nz-space>
+</ng-template>
+
+<wpx-table
+  #wpxTable
+  [wpxTitle]="titleRef"
+  [wpxExtra]="extraRef"
+  [wpxModel]="model"
+  [wpxColumns]="[
+    {
+      title: 'Target URL',
+      key: 'target',
+      render: target
+    },
+    {
+      title: 'Source URL',
+      key: 'source'
+    }
+  ]"
+  [wpxAction]="action"
+  (wpxChange)="getData()"
+>
+  <ng-template #target let-data>
+    @switch (data.kind) {
+      @case ('static') {
+        Static
+      }
+    }
+    {{ data.target }}
+  </ng-template>
+</wpx-table>
+
+<ng-template #action let-data>
+  <button nz-button nzType="text" nz-dropdown [nzDropdownMenu]="menu">
+    <span nz-icon nzType="ellipsis" nzTheme="outline"></span>
+  </button>
+  <nz-dropdown-menu #menu="nzDropdownMenu">
+    <ul nz-menu>
+      <li nz-menu-item (click)="openForm(data)"> Modify </li>
+      <li nz-menu-item nzDanger (click)="delete(data)"> Delete </li>
+    </ul>
+  </nz-dropdown-menu>
+</ng-template>

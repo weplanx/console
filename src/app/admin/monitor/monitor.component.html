@@ -1,0 +1,204 @@
+<ng-template #titleRef>
+  <nz-space nzAlign="center">
+    <nz-segmented
+      *nzSpaceItem
+      style="font-weight: bold"
+      [nzOptions]="dashboards"
+      [ngModel]="index"
+      (ngModelChange)="open($event)"
+    ></nz-segmented>
+    <nz-select
+      *nzSpaceItem
+      style="width: 200px"
+      [ngModel]="observability.interval$ | async"
+      (ngModelChange)="observability.setInterval($event)"
+    >
+      <nz-option [nzValue]="60" nzLabel="Refresh every 1 min"></nz-option>
+      <nz-option [nzValue]="300" nzLabel="Refresh every 5 min"></nz-option>
+      <nz-option [nzValue]="86400" nzLabel="Stop refresh"></nz-option>
+    </nz-select>
+  </nz-space>
+</ng-template>
+
+<ng-template #extraRef>
+  <nz-space nzAlign="center">
+    <button
+      *nzSpaceItem
+      nz-button
+      nzType="text"
+      (click)="observability.setInterval(86400)"
+      [disabled]="(observability.interval$ | async) !== 86400"
+    >
+      <span nz-icon nzType="sync"></span>
+    </button>
+    <nz-range-picker
+      *nzSpaceItem
+      [(ngModel)]="observability.date"
+      (ngModelChange)="observability.setInterval(86400)"
+      [nzDisabled]="(observability.interval$ | async) !== 86400"
+      [nzShowTime]="{ nzFormat: 'HH:mm' }"
+      nzFormat="yyyy-MM-dd HH:mm"
+    ></nz-range-picker>
+  </nz-space>
+</ng-template>
+
+<nz-card style="height: 100%" [nzTitle]="titleRef" [nzExtra]="extraRef">
+  @switch (index) {
+    @case (0) {
+      <nz-row [nzGutter]="[12, 12]">
+        <nz-col [nzSpan]="8">
+          <app-monitor-area
+            title="Available Connections"
+            name="mongo_available_connections"
+            [options]="options.mongo_available_connections"
+          ></app-monitor-area>
+        </nz-col>
+        <nz-col [nzSpan]="8">
+          <app-monitor-area
+            title="Open Connections"
+            name="mongo_open_connections"
+            [options]="options.mongo_open_connections"
+          ></app-monitor-area>
+        </nz-col>
+        <nz-col [nzSpan]="8">
+          <app-monitor-area
+            title="Commands Per Second"
+            name="mongo_commands_per_second"
+            [options]="options.mongo_commands_per_second"
+          ></app-monitor-area>
+        </nz-col>
+        <nz-col [nzSpan]="12">
+          <app-monitor-area
+            title="Query Operations"
+            name="mongo_query_operations"
+            [options]="options.mongo_query_operations"
+            [fn]="mongo_query_operations"
+          ></app-monitor-area>
+        </nz-col>
+        <nz-col [nzSpan]="12">
+          <app-monitor-area
+            title="Document Operations"
+            name="mongo_document_operations"
+            [options]="options.mongo_document_operations"
+            [fn]="mongo_document_operations"
+          ></app-monitor-area>
+        </nz-col>
+        <nz-col [nzSpan]="12">
+          <app-monitor-area title="Flushes" name="mongo_flushes" [options]="options.mongo_flushes"></app-monitor-area>
+        </nz-col>
+        <nz-col [nzSpan]="12">
+          <app-monitor-area
+            title="Network IO"
+            name="mongo_network_io"
+            [options]="options.mongo_network_io"
+            [fn]="mongo_network_io"
+          ></app-monitor-area>
+        </nz-col>
+      </nz-row>
+    }
+    @case (1) {
+      <nz-row [nzGutter]="[12, 12]">
+        <nz-col [nzSpan]="8">
+          <app-monitor-area
+            title="Ops Per Sec"
+            name="redis_ops_per_sec"
+            [options]="options.redis_ops_per_sec"
+          ></app-monitor-area>
+        </nz-col>
+        <nz-col [nzSpan]="8">
+          <app-monitor-area
+            title="Collections Rate"
+            name="redis_collections_rate"
+            [options]="options.redis_collections_rate"
+          ></app-monitor-area>
+        </nz-col>
+        <nz-col [nzSpan]="8">
+          <app-monitor-area
+            title="Keyspace hitrate"
+            name="redis_hit_rate"
+            [options]="options.redis_hit_rate"
+          ></app-monitor-area>
+        </nz-col>
+        <nz-col [nzSpan]="12">
+          <app-monitor-area
+            title="CPU"
+            name="redis_cpu"
+            [options]="options.redis_cpu"
+            [fn]="redis_cpu"
+          ></app-monitor-area>
+        </nz-col>
+        <nz-col [nzSpan]="12">
+          <app-monitor-area
+            title="Evi Exp Keys"
+            name="redis_evi_exp_keys"
+            [options]="options.redis_evi_exp_keys"
+            [fn]="redis_evi_exp_keys"
+          ></app-monitor-area>
+        </nz-col>
+        <nz-col [nzSpan]="12">
+          <app-monitor-area
+            title="Mem"
+            name="redis_mem"
+            [options]="options.redis_mem"
+            [fn]="redis_mem"
+          ></app-monitor-area>
+        </nz-col>
+        <nz-col [nzSpan]="12">
+          <app-monitor-area
+            title="Network IO"
+            name="redis_network_io"
+            [options]="options.redis_network_io"
+            [fn]="redis_network_io"
+          ></app-monitor-area>
+        </nz-col>
+      </nz-row>
+    }
+    @case (2) {
+      <nz-row [nzGutter]="[12, 12]">
+        <nz-col [nzSpan]="8">
+          <app-monitor-area
+            title="Connections"
+            name="nats_connections"
+            [options]="options.nats_connections"
+          ></app-monitor-area>
+        </nz-col>
+        <nz-col [nzSpan]="8">
+          <app-monitor-area
+            title="Subscriptions"
+            name="nats_subscriptions"
+            [options]="options.nats_subscriptions"
+          ></app-monitor-area>
+        </nz-col>
+        <nz-col [nzSpan]="8">
+          <app-monitor-area
+            title="Slow Consumers"
+            name="nats_slow_consumers"
+            [options]="options.nats_slow_consumers"
+          ></app-monitor-area>
+        </nz-col>
+        <nz-col [nzSpan]="12">
+          <app-monitor-area title="CPU" name="nats_cpu" [options]="options.nats_cpu"></app-monitor-area>
+        </nz-col>
+        <nz-col [nzSpan]="12">
+          <app-monitor-area
+            title="Msg IO"
+            name="nats_msg_io"
+            [options]="options.nats_msg_io"
+            [fn]="nats_msg_io"
+          ></app-monitor-area>
+        </nz-col>
+        <nz-col [nzSpan]="12">
+          <app-monitor-area title="Mem" name="nats_mem" [options]="options.nats_mem"></app-monitor-area>
+        </nz-col>
+        <nz-col [nzSpan]="12">
+          <app-monitor-area
+            title="Bytes IO"
+            name="nats_bytes_io"
+            [options]="options.nats_bytes_io"
+            [fn]="nats_bytes_io"
+          ></app-monitor-area>
+        </nz-col>
+      </nz-row>
+    }
+  }
+</nz-card>

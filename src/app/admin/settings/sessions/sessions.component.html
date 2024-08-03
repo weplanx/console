@@ -1,0 +1,113 @@
+<ng-template #titleRef>
+  <nz-space>
+    <nz-input-group *nzSpaceItem style="width: 320px" nzSuffixIcon="search">
+      <input [(ngModel)]="items.searchText" (keyup.enter)="getData(500)" type="text" nz-input placeholder="Email" />
+    </nz-input-group>
+    <nz-select *nzSpaceItem style="width: 320px" [(ngModel)]="interval" (ngModelChange)="getData(500)">
+      <nz-option [nzValue]="15" nzLabel="Refresh every 15 sec"></nz-option>
+      <nz-option [nzValue]="30" nzLabel="Refresh every 30 sec"></nz-option>
+      <nz-option [nzValue]="60" nzLabel="Refresh every 60 sec"></nz-option>
+    </nz-select>
+    <nz-button-group *nzSpaceItem>
+      <button nz-button nzType="text" (click)="clearSearch()">
+        <i nz-icon nzType="clear"></i>
+      </button>
+      <button nz-button nzType="text" (click)="getData(500)">
+        <i nz-icon nzType="reload"></i>
+      </button>
+    </nz-button-group>
+  </nz-space>
+</ng-template>
+
+<ng-template #extraRef>
+  <button nz-button nzType="primary" nzDanger (click)="bulkDelete()" [disabled]="items.selection.size === 0">
+    {{ items.selection.size }} selected items can be interrupted
+  </button>
+</ng-template>
+
+<nz-card style="height: 100%" [nzTitle]="titleRef" [nzExtra]="extraRef">
+  <nz-table
+    #basicTable
+    [nzData]="items.data"
+    [nzLoading]="items.loading"
+    [nzFrontPagination]="false"
+    [nzShowPagination]="false"
+    [nzScroll]="{ y }"
+  >
+    <thead>
+      <tr>
+        <th
+          nzWidth="60px"
+          nzLeft
+          nzAlign="center"
+          [nzChecked]="items.checked"
+          [nzIndeterminate]="items.indeterminate"
+          (nzCheckedChange)="items.setCurrentSelections($event)"
+        >
+        </th>
+        <th nzWidth="400px"><b>User</b></th>
+        <th><b>Detail</b></th>
+        <th nzRight nzWidth="60px">
+          <button nz-button nzType="text" disabled>
+            <span nz-icon nzType="setting" nzTheme="outline"></span>
+          </button>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (data of basicTable.data; track data._id) {
+        <tr>
+          <td
+            [nzChecked]="items.selection.has(data['_id'])"
+            (nzCheckedChange)="$event ? items.setSelection(data) : items.removeSelection(data['_id'])"
+          >
+          </td>
+          <td>
+            @if (app.user()?.email === data.email) {
+              <nz-tag>Me</nz-tag>
+            }
+            <span>
+              {{ data.email }} <b>[ {{ !data.name ? 'None' : data.name }} ]</b>
+            </span>
+          </td>
+          <td>
+            @if (data.history; as history) {
+              <nz-space [nzSplit]="spaceSplit">
+                <span *nzSpaceItem> Logged in {{ history.timestamp | date: 'medium' }} </span>
+                <span *nzSpaceItem>{{ history.metadata.client_ip }}</span>
+                <ng-container [ngSwitch]="history.metadata.version">
+                  <ng-container *ngSwitchCase="'shuliancloud.v4'">
+                    <span *nzSpaceItem>
+                      {{ history.detail.country | wpxBlank: 'Unknown' }}
+                      [{{ history.detail.continent }}]
+                    </span>
+                    <span *nzSpaceItem>{{ history.detail.prov | wpxBlank: 'Unknown' }}</span>
+                    <span *nzSpaceItem>
+                      {{ history.detail.city | wpxBlank: 'Unknown' }}[{{ history.detail.lng }},{{ history.detail.lat }}]
+                    </span>
+                    <span *nzSpaceItem>{{ history.detail.isp }}</span>
+                    <span *nzSpaceItem>{{ history.detail.timezone }}</span>
+                  </ng-container>
+                </ng-container>
+              </nz-space>
+            }
+          </td>
+          <td nzRight>
+            <button nz-button nzType="text" nz-dropdown [nzDropdownMenu]="menu">
+              <span nz-icon nzType="ellipsis" nzTheme="outline"></span>
+            </button>
+            <nz-dropdown-menu #menu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item nzDanger (click)="delete(data)">Interrupt</li>
+              </ul>
+            </nz-dropdown-menu>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </nz-table>
+</nz-card>
+
+<ng-template #spaceSplit>
+  <nz-divider nzType="vertical"></nz-divider>
+</ng-template>

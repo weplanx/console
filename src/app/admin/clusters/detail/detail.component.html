@@ -1,0 +1,28 @@
+<nz-layout style="height: 100%; background: transparent">
+  <nz-page-header>
+    <nz-page-header-title>{{ data.name }}</nz-page-header-title>
+  </nz-page-header>
+
+  <nz-content style="overflow: hidden auto">
+    <nz-card>
+      <nz-table nzTemplateMode>
+        <thead>
+          <tr>
+            <th nzWidth="25%"><b>Host [IP]</b></th>
+            <th nzWidth="25%"><b>Cpu / Mem / Storage</b></th>
+            <th nzWidth="25%"><b>OS</b></th>
+            <th nzWidth="25%"><b>Join Date</b></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of nodes; track item.hostname) {
+            <td> {{ item.hostname }} [{{ item.ip }}]</td>
+            <td> {{ item.cpu }} / {{ item.mem | nzBytes }} / {{ item.storage | nzBytes }} </td>
+            <td> {{ item.os }} [{{ item.architecture }}] </td>
+            <td> {{ item.create | date: 'medium' }} </td>
+          }
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </nz-content>
+</nz-layout>

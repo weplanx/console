@@ -1,0 +1,41 @@
+<form nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-form-item>
+    <nz-form-label nzRequired>Service Name</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.name">
+      <input nz-input formControlName="name" placeholder="Please enter the service name" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>Kind</nz-form-label>
+    <nz-form-control>
+      <nz-radio-group formControlName="kind">
+        @for (item of kinds; track item.key) {
+          <label nz-radio-button [nzValue]="item.key">{{ item.label }}</label>
+        }
+      </nz-radio-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  @switch (kind) {
+    @case ('schedule') {
+      <ng-container formGroupName="schedule">
+        <nz-form-item>
+          <nz-form-label nzRequired> Node Identity</nz-form-label>
+          <nz-form-control nzHasFeedback [nzAutoTips]="tips.schedule_node">
+            <input nz-input formControlName="node" placeholder="Please enter the node identity" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <button nz-button type="button" nzType="dashed" (click)="schedulePing()">Test Connectivity</button>
+          </nz-form-control>
+        </nz-form-item>
+      </ng-container>
+    }
+  }
+</form>
+
+<div *nzModalFooter>
+  <button nz-button type="button" nzType="default" (click)="close()">Cancel</button>
+  <button nz-button nzType="primary" form="form" [disabled]="!form.valid">Submit</button>
+</div>

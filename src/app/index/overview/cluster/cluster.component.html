@@ -1,0 +1,28 @@
+<form nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-form-item>
+    <nz-form-label nzRequired> Cluster </nz-form-label>
+    <nz-form-control
+      nzHasFeedback
+      [nzAutoTips]="tips.cluster"
+      nzExtra="*The original deployed resources will not be cleared after switching the cluster."
+    >
+      <nz-select
+        formControlName="cluster"
+        nzAllowClear
+        nzPlaceHolder="Please select a cluster"
+        nzShowSearch
+        nzServerSearch
+        (nzOnSearch)="clusters$.next($event)"
+      >
+        @for (item of clusterItems; track item._id) {
+          <nz-option [nzValue]="item._id" [nzLabel]="item.name"> </nz-option>
+        }
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *nzModalFooter>
+  <button nz-button type="button" nzType="default" (click)="close()">Cancel</button>
+  <button nz-button nzType="primary" form="form" [disabled]="!form.valid">Submit</button>
+</div>

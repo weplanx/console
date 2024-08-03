@@ -1,0 +1,18 @@
+<nz-descriptions nzLayout="vertical" [nzColumn]="2">
+  <nz-descriptions-item nzTitle="Project Name" [nzSpan]="1"> {{ data.name }}</nz-descriptions-item>
+  <nz-descriptions-item nzTitle="SECRET ID and KEY">
+    @if (data.secret_id && data.secret_key) {
+      <span *nzSpaceItem nz-typography nzCopyable [nzContent]="data.secret_id"></span>
+      <span *nzSpaceItem nz-typography nzCopyable [nzContent]="data.secret_key"></span>
+    } @else {
+      Nothing
+    }
+  </nz-descriptions-item>
+  <nz-descriptions-item nzTitle="IP Restrictions" [nzSpan]="2">
+    @if (data.entry) {
+      {{ data.entry }}
+    } @else {
+      Nothing
+    }
+  </nz-descriptions-item>
+</nz-descriptions>

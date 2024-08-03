@@ -1,0 +1,334 @@
+<form nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-tabset style="height: 100%" nzTabPosition="left" [(nzSelectedIndex)]="tabIndex">
+    <nz-tab nzTitle="Type">
+      <nz-card [nzBodyStyle]="{ 'padding.px': 1 }">
+        <nz-radio-group formControlName="type">
+          @for (item of typeItems; track item.value) {
+            <div nz-card-grid style="text-align: center; width: 25%" [nzHoverable]="false">
+              <label nz-radio [nzValue]="item.value">
+                <h2><span nz-icon [nzType]="item.icon" nzTheme="outline"></span> {{ item.label }} </h2>
+                <span>{{ item.description }}</span>
+              </label>
+            </div>
+          }
+        </nz-radio-group>
+      </nz-card>
+    </nz-tab>
+    <nz-tab nzTitle="Basic">
+      <nz-row [nzGutter]="24">
+        <nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired>Display Name</nz-form-label>
+            <nz-form-control
+              nzHasFeedback
+              [nzAutoTips]="{
+                default: {
+                  required: 'Display Name cannot be empty'
+                }
+              }"
+            >
+              <input nz-input type="text" formControlName="name" placeholder="Display name, such as Order Number" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>Placeholder</nz-form-label>
+            <nz-form-control nzHasFeedback>
+              <input
+                nz-input
+                type="text"
+                formControlName="placeholder"
+                placeholder="Prompt information in the input box"
+              />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>Description</nz-form-label>
+            <nz-form-control>
+              <textarea
+                nz-input
+                formControlName="description"
+                [rows]="3"
+                placeholder="Additional description outside the text box"
+              ></textarea>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-col>
+        <nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label nzRequired>Field Key</nz-form-label>
+            <nz-form-control
+              nzHasFeedback
+              [nzAutoTips]="{
+                default: {
+                  required: 'Field Key cannot be empty',
+                  pattern: 'Only lowercase letters and underscores are allowed',
+                  duplicated: 'Field Key must be unique'
+                }
+              }"
+            >
+              <input
+                nz-input
+                type="text"
+                formControlName="key"
+                placeholder="Database collection field, such as order_number"
+              />
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item>
+            <nz-form-label nzRequired>Required</nz-form-label>
+            <nz-form-control nzExtra="This section is required when creating content">
+              <nz-switch formControlName="required"></nz-switch>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label nzRequired>Visible</nz-form-label>
+            <nz-form-control
+              nzExtra="It is not displayed in the form, but can be displayed by triggering an explicit rule"
+            >
+              <nz-switch formControlName="visible"></nz-switch>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-col>
+      </nz-row>
+    </nz-tab>
+    <nz-tab nzTitle="Advanced">
+      <nz-row [nzGutter]="24">
+        @if (option) {
+          <nz-col [nzSpan]="12">
+            <ng-container formGroupName="option" [ngSwitch]="type.value">
+              @switch (type.value) {
+                @case ('number') {
+                  <nz-form-item>
+                    <nz-form-label>Min</nz-form-label>
+                    <nz-form-control>
+                      <nz-input-number
+                        style="width: 100%"
+                        formControlName="min"
+                        [nzStep]="1"
+                        [nzPrecision]="0"
+                        nzPlaceHolder="Minimum value, such as 1"
+                      ></nz-input-number>
+                    </nz-form-control>
+                  </nz-form-item>
+                  <nz-form-item>
+                    <nz-form-label>Max</nz-form-label>
+                    <nz-form-control>
+                      <nz-input-number
+                        style="width: 100%"
+                        formControlName="max"
+                        [nzStep]="1"
+                        [nzPrecision]="0"
+                        nzPlaceHolder="Maximum value, such as 1000"
+                      ></nz-input-number>
+                    </nz-form-control>
+                  </nz-form-item>
+                  <nz-form-item>
+                    <nz-form-label>Decimal</nz-form-label>
+                    <nz-form-control>
+                      <nz-input-number
+                        style="width: 100%"
+                        formControlName="decimal"
+                        [nzStep]="1"
+                        [nzPrecision]="0"
+                      ></nz-input-number>
+                    </nz-form-control>
+                  </nz-form-item>
+                }
+                @case ('date') {
+                  <nz-form-item>
+                    <nz-form-label>Include Time</nz-form-label>
+                    <nz-form-control>
+                      <nz-switch formControlName="time"></nz-switch>
+                    </nz-form-control>
+                  </nz-form-item>
+                }
+                @case ('dates') {
+                  <nz-form-item>
+                    <nz-form-label>Include Time</nz-form-label>
+                    <nz-form-control>
+                      <nz-switch formControlName="time"></nz-switch>
+                    </nz-form-control>
+                  </nz-form-item>
+                }
+                @case ('radio') {
+                  <ng-container *ngTemplateOutlet="enumsRef"></ng-container>
+                }
+                @case ('checkbox') {
+                  <ng-container *ngTemplateOutlet="enumsRef"></ng-container>
+                }
+                @case ('select') {
+                  <nz-form-item>
+                    <nz-form-label>Multiple</nz-form-label>
+                    <nz-form-control>
+                      <nz-switch formControlName="multiple"></nz-switch>
+                    </nz-form-control>
+                  </nz-form-item>
+                  <ng-container *ngTemplateOutlet="enumsRef"></ng-container>
+                }
+                @case ('ref') {
+                  <nz-form-item>
+                    <nz-form-label>Multiple</nz-form-label>
+                    <nz-form-control>
+                      <nz-switch formControlName="multiple"></nz-switch>
+                    </nz-form-control>
+                  </nz-form-item>
+                  <nz-form-item>
+                    <nz-form-label nzRequired>Reference</nz-form-label>
+                    <nz-form-control>
+                      <nz-select formControlName="ref" nzPlaceHolder="Please select a reference">
+                        @for (x of refers; track x._id) {
+                          <nz-option [nzValue]="x._id" [nzLabel]="x.name + ' [' + x.schema!.key + ']'"> </nz-option>
+                        }
+                      </nz-select>
+                    </nz-form-control>
+                  </nz-form-item>
+                  <nz-form-item>
+                    <nz-form-label nzRequired>Reference Display Field</nz-form-label>
+                    <nz-form-control>
+                      <nz-select formControlName="ref_key" nzPlaceHolder="Please select a field">
+                        @for (x of referFields; track x.key) {
+                          <nz-option [nzValue]="x.key" [nzLabel]="x.name + ' [' + x.key + ']'"> </nz-option>
+                        }
+                      </nz-select>
+                    </nz-form-control>
+                  </nz-form-item>
+                }
+                @case ('manual') {
+                  <nz-form-item>
+                    <nz-form-label nzRequired>Component</nz-form-label>
+                    <nz-form-control
+                      nzHasFeedback
+                      [nzAutoTips]="{
+                        default: {
+                          required: 'Component cannot be empty'
+                        }
+                      }"
+                    >
+                      <input
+                        nz-input
+                        type="text"
+                        formControlName="component"
+                        placeholder="Please enter the component ID"
+                      />
+                    </nz-form-control>
+                  </nz-form-item>
+                }
+              }
+              <ng-template #enumsRef>
+                <nz-form-item>
+                  <nz-form-label>Enumeration</nz-form-label>
+                  <nz-form-control formArrayName="enums">
+                    <ng-container *ngFor="let x of optionEnums.controls; index as i; first as isFirst">
+                      <nz-input-group
+                        [formGroupName]="i"
+                        nzCompact
+                        [ngStyle]="{ 'margin-top': isFirst ? null : '-1px' }"
+                      >
+                        <input style="width: 45%" type="text" nz-input formControlName="label" placeholder="Label" />
+                        <input style="width: 45%" type="text" nz-input formControlName="value" placeholder="Value" />
+                        <button
+                          style="width: 10%"
+                          nz-button
+                          type="button"
+                          nzType="default"
+                          (click)="removeOptionEnum(i)"
+                        >
+                          <i nz-icon nzType="minus-circle"></i>
+                        </button>
+                      </nz-input-group>
+                    </ng-container>
+                    <button
+                      style="margin-top: 8px"
+                      type="button"
+                      nz-button
+                      nzType="dashed"
+                      nzBlock
+                      (click)="addOptionEnum()"
+                    >
+                      <i nz-icon nzType="plus-circle"></i> Create
+                    </button>
+                  </nz-form-control>
+                </nz-form-item>
+              </ng-template>
+            </ng-container>
+          </nz-col>
+        }
+
+        <nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label>Default</nz-form-label>
+            <nz-form-control nzHasFeedback>
+              @switch (type.value) {
+                @case ('string') {
+                  <input nz-input type="text" formControlName="default_to" placeholder="Set default" />
+                }
+                @case ('text') {
+                  <textarea rows="3" nz-input formControlName="default_to" placeholder="Set default"></textarea>
+                }
+                @case ('number') {
+                  <nz-input-number
+                    style="width: 100%"
+                    formControlName="default_to"
+                    nzPlaceHolder="Set default"
+                    [nzStep]="1"
+                    [nzMax]="!optionMax.value ? infinity : optionMax.value"
+                    [nzMin]="!optionMin.value ? -infinity : optionMin.value"
+                    [nzPrecision]="optionDecimal.value"
+                  ></nz-input-number>
+                }
+                @case ('date') {
+                  <nz-date-picker
+                    style="width: 100%"
+                    formControlName="default_to"
+                    nzPlaceHolder="Set default"
+                    [nzShowTime]="optionTime.value"
+                  ></nz-date-picker>
+                }
+                @case ('dates') {
+                  <nz-range-picker
+                    style="width: 100%"
+                    formControlName="default_to"
+                    [nzShowTime]="optionTime.value"
+                  ></nz-range-picker>
+                }
+                @case ('bool') {
+                  <nz-switch formControlName="default_to"></nz-switch>
+                }
+                @case ('radio') {
+                  <nz-radio-group formControlName="default_to">
+                    @for (x of optionEnums.value; track x.value) {
+                      <label nz-radio [nzValue]="x.value">{{ x.label }}</label>
+                    }
+                  </nz-radio-group>
+                }
+                @case ('checkbox') {
+                  <wpx-checkbox formControlName="default_to" [wpxOptions]="optionEnums.value"></wpx-checkbox>
+                }
+                @case ('select') {
+                  <nz-select
+                    formControlName="default_to"
+                    [nzMode]="optionMultiple.value ? 'tags' : 'default'"
+                    nzPlaceHolder="Set default"
+                  >
+                    @for (x of optionEnums.value; track x.value) {
+                      <nz-option [nzLabel]="x.label" [nzValue]="x.value"></nz-option>
+                    }
+                  </nz-select>
+                }
+                @default {
+                  None
+                }
+              }
+            </nz-form-control>
+          </nz-form-item>
+        </nz-col>
+      </nz-row>
+    </nz-tab>
+  </nz-tabset>
+</form>
+
+<div *nzModalFooter>
+  <button nz-button type="button" nzType="default" (click)="close()">Cancel</button>
+  <button nz-button nzType="primary" form="form" [disabled]="!form.valid">Submit</button>
+</div>

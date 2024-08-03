@@ -1,0 +1,35 @@
+<form *ngIf="form" nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-form-item>
+    <nz-form-label nzRequired>Account Locking Times</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.LoginFailures">
+      <nz-input-number
+        style="width: 100%"
+        formControlName="LoginFailures"
+        [nzFormatter]="formatterTimes"
+        [nzMin]="1"
+        [nzStep]="1"
+      ></nz-input-number>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>Account Locking TTL</nz-form-label>
+    <nz-form-control
+      nzHasFeedback
+      nzExtra="The account is continuously sign in or has been locked for a limited time"
+      [nzAutoTips]="tips.LoginTTL"
+    >
+      <nz-input-number
+        style="width: 100%"
+        formControlName="LoginTTL"
+        [nzFormatter]="formatterSec"
+        [nzMin]="0"
+        [nzStep]="1"
+      ></nz-input-number>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div *nzModalFooter>
+  <button nz-button type="button" nzType="default" (click)="close()">Cancel</button>
+  <button nz-button nzType="primary" form="form" [disabled]="!form.valid">Submit</button>
+</div>

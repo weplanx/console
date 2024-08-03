@@ -1,0 +1,17 @@
+.cdk-drag-preview {
+  display: table;
+  box-sizing: border-box;
+  td {
+    background: transparent;
+  }
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.placeholder {
+  height: 63px;
+  border: dashed 1px #40a9ff;
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}

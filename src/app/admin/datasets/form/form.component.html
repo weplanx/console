@@ -1,0 +1,50 @@
+<form nz-form nzLayout="vertical" id="form" [formGroup]="form" (wpxSubmit)="submit($event)">
+  <nz-form-item>
+    <nz-form-label nzRequired>Collection Name</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.name">
+      <input nz-input formControlName="name" placeholder="Please enter a collection name" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>Kind</nz-form-label>
+    <nz-form-control nzHasFeedback [nzAutoTips]="tips.kind">
+      <nz-select formControlName="kind" nzPlaceHolder="Please select a kind">
+        <nz-option nzValue="collection" nzLabel="Standard"></nz-option>
+        <nz-option nzValue="timeseries" nzLabel="Timeseries"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  @if (form.get('kind')?.value === 'timeseries') {
+    <ng-container formGroupName="option">
+      <nz-form-item>
+        <nz-form-label nzRequired>TimeField</nz-form-label>
+        <nz-form-control nzHasFeedback [nzAutoTips]="tips.name">
+          <input nz-input formControlName="time" placeholder="Please enter the TimeField" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired>MetaField</nz-form-label>
+        <nz-form-control nzHasFeedback [nzAutoTips]="tips.name">
+          <input nz-input formControlName="meta" placeholder="Please enter the MetaField" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired>Expired</nz-form-label>
+        <nz-form-control [nzAutoTips]="tips.name" nzExtra="0 is permanent">
+          <nz-input-number
+            style="width: 100%"
+            formControlName="expire"
+            [nzMin]="1"
+            [nzStep]="1"
+            [nzFormatter]="formatterDay"
+          ></nz-input-number>
+        </nz-form-control>
+      </nz-form-item>
+    </ng-container>
+  }
+</form>
+
+<div *nzModalFooter>
+  <button nz-button type="button" nzType="default" (click)="close()">Cancel</button>
+  <button nz-button nzType="primary" form="form" [disabled]="!form.valid">Submit</button>
+</div>

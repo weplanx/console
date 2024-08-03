@@ -1,0 +1,69 @@
+<nz-card>
+  <nz-row style="padding-bottom: 12px" nzJustify="space-between">
+    <nz-col>
+      <img style="height: 90px" [ngSrc]="['assets', 'Lark-logo.svg'] | wpxAssets" alt="" />
+    </nz-col>
+    <nz-col></nz-col>
+    <nz-col></nz-col>
+  </nz-row>
+
+  <nz-card nzSize="small" nzType="inner" nzTitle="Application" [nzExtra]="larkEditRef">
+    <ng-template #larkEditRef>
+      <button nz-button nzType="text" (click)="setLark()">
+        <span nz-icon nzType="edit"></span>
+      </button>
+    </ng-template>
+    <nz-descriptions nzLayout="vertical" [nzColumn]="2">
+      <nz-descriptions-item nzTitle="Lark App ID">
+        @if (data['LarkAppId']) {
+          {{ data['LarkAppId'] }}
+        } @else {
+          <span>Unset</span>
+        }
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Lark App Secret">
+        @if (data['LarkAppSecret']) {
+          <span>Exists</span>
+        } @else {
+          <span>Unset</span>
+        }
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Lark Encrypt Key">
+        @if (data['LarkEncryptKey']) {
+          <span>Exists</span>
+        } @else {
+          <span>Unset</span>
+        }
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Lark Verification Token">
+        @if (data['LarkVerificationToken']) {
+          <span>Exists</span>
+        } @else {
+          <span>Unset</span>
+        }
+      </nz-descriptions-item>
+    </nz-descriptions>
+  </nz-card>
+
+  <nz-row style="padding-top: 12px" [nzGutter]="[8, 8]">
+    <nz-col [nzSpan]="12">
+      <nz-card nzSize="small" nzType="inner" nzTitle="Third-party Login" [nzExtra]="larkLoginRef">
+        <ng-template #larkLoginRef>
+          <button nz-button nzType="text" (click)="setRedirect()">
+            <span nz-icon nzType="edit"></span>
+          </button>
+        </ng-template>
+        <p>Allow login through enterprise platform user identity</p>
+        <nz-descriptions nzLayout="vertical" [nzColumn]="2">
+          <nz-descriptions-item nzTitle="Redirect Url">
+            @if (data['RedirectUrl']) {
+              {{ data['RedirectUrl'] }}
+            } @else {
+              <span>Unset</span>
+            }
+          </nz-descriptions-item>
+        </nz-descriptions>
+      </nz-card>
+    </nz-col>
+  </nz-row>
+</nz-card>

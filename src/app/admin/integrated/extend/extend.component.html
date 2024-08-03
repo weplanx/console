@@ -1,0 +1,133 @@
+<nz-card>
+  <nz-tabset
+    style="height: 100%"
+    nzTabPosition="left"
+    [(nzSelectedIndex)]="tabIndex"
+    (nzSelectedIndexChange)="saveTabIndex()"
+  >
+    <nz-tab nzTitle="Public Email">
+      <ng-template #emailRef>
+        <button nz-button nzType="text" (click)="setEmail()">
+          <span nz-icon nzType="edit"></span>
+        </button>
+      </ng-template>
+      <nz-card nzSize="small" nzType="inner" nzTitle="Basic" [nzExtra]="emailRef">
+        <nz-descriptions nzLayout="vertical" [nzColumn]="2">
+          <nz-descriptions-item nzTitle="SMTP Host">
+            @if (values['EmailHost']) {
+              <span>{{ values['EmailHost'] }}</span>
+            } @else {
+              <span>Unset</span>
+            }
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="SMTP Port(SSL)">
+            @if (values['EmailPort']) {
+              <span>{{ values['EmailPort'] }}</span>
+            } @else {
+              <span>Unset</span>
+            }
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Username">
+            @if (values['EmailUsername']) {
+              <span>{{ values['EmailUsername'] }}</span>
+            } @else {
+              <span>Unset</span>
+            }
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Password">
+            @if (values['EmailPassword']) {
+              <span>Exists</span>
+            } @else {
+              <span>Unset</span>
+            }
+          </nz-descriptions-item>
+        </nz-descriptions>
+      </nz-card>
+    </nz-tab>
+    <nz-tab nzTitle="Tencent SMS">
+      <ng-template #smsEditTpl>
+        <button nz-button nzType="text" (click)="setSms()">
+          <span nz-icon nzType="edit"></span>
+        </button>
+      </ng-template>
+      <nz-card nzSize="small" nzType="inner" nzTitle="Basic" [nzExtra]="smsEditTpl">
+        <nz-descriptions nzLayout="vertical" [nzColumn]="3">
+          <nz-descriptions-item nzTitle="Secret Id">
+            @if (values['SmsSecretId']) {
+              <span>{{ values['SmsSecretId'] }}</span>
+            } @else {
+              <span>Unset</span>
+            }
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Secret Key">
+            @if (values['SmsSecretKey']) {
+              <span>Exists</span>
+            } @else {
+              <span>Unset</span>
+            }
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Sign">
+            @if (values['SmsSign']) {
+              <span> {{ values['SmsSign'] }}</span>
+            } @else {
+              <span>Unset</span>
+            }
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="AppId">
+            @if (values['SmsAppId']) {
+              <span> {{ values['SmsAppId'] }}</span>
+            } @else {
+              <span>Unset</span>
+            }
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Region">
+            @if (values['SmsRegion']) {
+              <span> {{ values['SmsRegion'] }}</span>
+            } @else {
+              <span>Unset</span>
+            }
+          </nz-descriptions-item>
+        </nz-descriptions>
+      </nz-card>
+
+      <nz-table nzSize="small" nzTemplateMode>
+        <thead>
+          <tr>
+            <th nzWidth="60px"></th>
+            <th>Key</th>
+            <th>Template</th>
+            <th>ID</th>
+            <th nzWidth="60px" nzAlign="center">
+              <button nz-button type="button" nzType="text" disabled>
+                <span nz-icon nzType="setting" nzTheme="outline"></span>
+              </button>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (x of smsTpls; track x.key) {
+            <tr>
+              <td></td>
+              <td>
+                <b>{{ x.key }}</b>
+              </td>
+              <td>{{ x.name }}</td>
+              <td>
+                @if (values[x.key]) {
+                  <span>{{ values[x.key] }}</span>
+                } @else {
+                  <span>Unset</span>
+                }
+              </td>
+              <td>
+                <button nz-button nzType="text" (click)="setSmsTpl(x.key)">
+                  <span nz-icon nzType="edit"></span>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </nz-table>
+    </nz-tab>
+  </nz-tabset>
+</nz-card>

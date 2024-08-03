@@ -1,0 +1,137 @@
+<ng-template #titleRef>
+  <nz-space>
+    <wpx-keyword
+      *nzSpaceItem
+      [wpxWidth]="320"
+      [wpxModel]="model"
+      [wpxKeys]="['no', 'name', 'account']"
+      (wpxSubmit)="getData()"
+      wpxPlaceholder="Order Number, Name, Account"
+    ></wpx-keyword>
+    <wpx-toolbox *nzSpaceItem [wpxModel]="model" [wpxSearchForm]="form" (wpxClear)="clear()" (wpxRefresh)="getData()">
+      <form nz-form id="search" [formGroup]="form" (wpxSubmit)="search($event)">
+        <nz-row [nzGutter]="[16, 16]">
+          <nz-col [nzSpan]="6">
+            <nz-form-item>
+              <nz-form-label>Order Number</nz-form-label>
+              <nz-form-control>
+                <input nz-input formControlName="no" />
+              </nz-form-control>
+            </nz-form-item>
+          </nz-col>
+          <nz-col [nzSpan]="6">
+            <nz-form-item>
+              <nz-form-label>Name</nz-form-label>
+              <nz-form-control>
+                <input nz-input formControlName="name" />
+              </nz-form-control>
+            </nz-form-item>
+          </nz-col>
+          <nz-col [nzSpan]="6">
+            <nz-form-item>
+              <nz-form-label>Account</nz-form-label>
+              <nz-form-control>
+                <input nz-input formControlName="account" />
+              </nz-form-control>
+            </nz-form-item>
+          </nz-col>
+        </nz-row>
+      </form>
+    </wpx-toolbox>
+  </nz-space>
+</ng-template>
+
+<ng-template #extraRef>
+  <nz-space>
+    @if (model.selection.size; as size) {
+      <button *nzSpaceItem nz-button nzType="dashed" nz-dropdown [nzDropdownMenu]="menu">
+        {{ size }} items selected
+      </button>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu>
+          <li nz-menu-item (click)="wpxTable.clearSelections()"> Unselect </li>
+          <li nz-menu-item nzDanger (click)="bulkDelete()"> Delete </li>
+        </ul>
+      </nz-dropdown-menu>
+    }
+    <button *nzSpaceItem nz-button nzType="primary" (click)="open()"> Create </button>
+  </nz-space>
+</ng-template>
+
+<wpx-table
+  #wpxTable
+  [wpxTitle]="titleRef"
+  [wpxExtra]="extraRef"
+  [wpxModel]="model"
+  [wpxColumns]="[
+    {
+      title: 'Order Number',
+      key: 'no',
+      width: '240px'
+    },
+    {
+      title: 'Name',
+      key: 'name',
+      width: '240px'
+    },
+    {
+      title: 'Description',
+      key: 'description',
+      width: '240px',
+      ellipsis: true
+    },
+    {
+      title: 'Account',
+      key: 'account',
+      width: '240px'
+    },
+    {
+      title: 'Customer',
+      key: 'customer',
+      width: '240px'
+    },
+    {
+      title: 'Email',
+      key: 'email',
+      width: '240px'
+    },
+    {
+      title: 'Phone',
+      key: 'phone',
+      width: '240px'
+    },
+    {
+      title: 'Price',
+      key: 'price',
+      width: '240px'
+    },
+    {
+      title: 'Valid',
+      key: 'valid',
+      width: '400px',
+      render: valid
+    }
+  ]"
+  [wpxAction]="action"
+  [wpxX]="'1400px'"
+  (wpxChange)="getData()"
+>
+</wpx-table>
+
+<ng-template #valid let-data>
+  @for (x of data['valid']; track x) {
+    <nz-tag>{{ x }}</nz-tag>
+  }
+</ng-template>
+
+<ng-template #action let-data>
+  <button nz-button nzType="text" nz-dropdown [nzDropdownMenu]="menu">
+    <span nz-icon nzType="ellipsis" nzTheme="outline"></span>
+  </button>
+  <nz-dropdown-menu #menu="nzDropdownMenu">
+    <ul nz-menu>
+      <li nz-menu-item (click)="open(data)"> Modify </li>
+      <li nz-menu-item nzDanger (click)="delete(data)"> Delete </li>
+    </ul>
+  </nz-dropdown-menu>
+</ng-template>
