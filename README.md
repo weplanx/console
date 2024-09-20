@@ -7,11 +7,7 @@
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-blue.svg?style=flat-square)](https://www.typescriptlang.org/)
 [![GitHub license](https://img.shields.io/github/license/weplanx/console?style=flat-square)](https://raw.githubusercontent.com/weplanx/console/main/LICENSE)
 
-Development of Console UI and Angular auxiliary library for weplanx devops
-
-> thanks to the open source license provided by [JetBrains](https://www.jetbrains.com/?from=ngx-bit) sponsor
->
-> [![JetBrains](https://cdn.kainonly.com/assets/jetbrains.svg)](https://www.jetbrains.com/?from=ngx-bit)
+Development of Console UI and Angular auxiliary library for weplanx devops server(Suitable for mongoDB backend)
 
 ## License
 
