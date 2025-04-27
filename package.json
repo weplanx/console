@@ -1,5 +1,5 @@
 {
-  "name": "devops",
+  "name": "console",
   "version": "0.0.0-NOT-USED",
   "scripts": {
     "start": "ng serve",
