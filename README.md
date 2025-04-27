@@ -1,4 +1,4 @@
-# Weplanx Devops
+# Weplanx Console
 
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/weplanx/console/publish.yml?label=publish)]()
 [![npm](https://img.shields.io/npm/v/@weplanx/ng.svg?style=flat-square)](https://www.npmjs.com/package/@weplanx/ng)
@@ -7,7 +7,7 @@
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-blue.svg?style=flat-square)](https://www.typescriptlang.org/)
 [![GitHub license](https://img.shields.io/github/license/weplanx/console?style=flat-square)](https://raw.githubusercontent.com/weplanx/console/main/LICENSE)
 
-Development of Console UI and Angular auxiliary library for weplanx devops server(Suitable for mongoDB backend)
+Develop an Angular - based auxiliary library for the Console UI of the weplanx DevOps server, specifically tailored for MongoDB - based backends.
 
 ## License
 
